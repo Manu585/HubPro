@@ -1,0 +1,4 @@
+name: HubPro
+version: '${project.version}'
+main: at.manu.hubpro.HubPro
+api-version: '1.20'
