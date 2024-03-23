@@ -1,8 +1,7 @@
-package at.manu.hubpro.hubitem;
+package at.manu.hubpro.item.hubitem;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;

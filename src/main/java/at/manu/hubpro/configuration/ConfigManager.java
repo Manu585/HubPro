@@ -56,12 +56,20 @@ public class ConfigManager {
             // Configuring the "Lobby" item
             config.set(basePath + ".Lobby.Server", "lobbyServerName"); // Server to connect
             config.set(basePath + ".Lobby.ItemName", "&6Lobby");
+            List<String> lobbyLore = new ArrayList<>();
+            lobbyLore.add(MessageUtil.format("&6YeahYeah"));
+            lobbyLore.add(MessageUtil.format("&4I am modular"));
+            config.set(basePath + ".Lobby.Lore", lobbyLore);
             config.set(basePath + ".Lobby.ItemStack", "GRASS_BLOCK");
             config.set(basePath + ".Lobby.menuplace", 14);
 
             // Configuring the "Survival" item
             config.set(basePath + ".Survival.Server", "survivalServerName"); // Server to connect
             config.set(basePath + ".Survival.ItemName", "&2Survival");
+            List<String> survivalLore = new ArrayList<>();
+            survivalLore.add(MessageUtil.format("&6YeahYeah"));
+            survivalLore.add(MessageUtil.format("&4I am modular"));
+            config.set(basePath + ".Survival.Lore", survivalLore);
             config.set(basePath + ".Survival.ItemStack", "DIRT");
             config.set(basePath + ".Survival.menuplace", 15);
 

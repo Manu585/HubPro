@@ -1,7 +1,7 @@
-package at.manu.hubpro.hubitem.fun;
+package at.manu.hubpro.item.important;
 
 import at.manu.hubpro.configuration.ConfigManager;
-import at.manu.hubpro.hubitem.HubItem;
+import at.manu.hubpro.item.hubitem.HubItem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,10 +9,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static at.manu.hubpro.configuration.ConfigManager.getConfig;
-
-public class TpBow extends HubItem {
-    public TpBow(String itemName, ItemStack item) {
+public class ServerSelector extends HubItem {
+    public ServerSelector(String itemName, ItemStack item) {
         super(itemName, item);
     }
 
@@ -25,8 +23,7 @@ public class TpBow extends HubItem {
     @Override
     protected List<String> createLore() {
         List<String> lore = new ArrayList<>();
-        lore.add(getItemLoreColor() + "Yoyo");
-        lore.add(getItemLoreColor() + "YOYO");
+        lore.add(getItemLoreColor() + "Select the server you want to connect to");
         return lore;
     }
 
@@ -35,7 +32,7 @@ public class TpBow extends HubItem {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow"));
+            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.ServerSelector"));
             meta.setLore(getItemLore());
             item.setItemMeta(meta);
         }
@@ -43,6 +40,6 @@ public class TpBow extends HubItem {
 
     @Override
     public ChatColor getItemLoreColor() {
-        return ChatColor.YELLOW;
+        return ChatColor.DARK_PURPLE;
     }
 }

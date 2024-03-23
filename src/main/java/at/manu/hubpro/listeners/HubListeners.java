@@ -1,13 +1,10 @@
 package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.HubPro;
-import at.manu.hubpro.configuration.ConfigManager;
-import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
+import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.permission.PermissionUtils;
-import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -101,5 +98,4 @@ public class HubListeners implements Listener {
             }
         }
     }
-
 }

@@ -2,7 +2,7 @@ package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
-import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
+import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.gui.GuiHelper;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -87,6 +88,8 @@ public class HubItemListener implements Listener {
                                 ItemMeta meta = itemStack.getItemMeta();
                                 if (meta != null) {
                                     meta.setDisplayName(itemName);
+                                    List<String> itemLore = ConfigManager.serverItemsConfig.get().getStringList(key + ".Lore");
+                                    meta.setLore(itemLore);
                                     itemStack.setItemMeta(meta);
                                 }
                                 items.put(menuPlace, itemStack);
@@ -109,14 +112,12 @@ public class HubItemListener implements Listener {
 
         GuiHelper gh = playerGuis.get(player.getUniqueId());
         if (gh == null || !e.getInventory().equals(gh.getInventory())) {
-            System.out.println("Either gh is null or the inventory doesn't match.");
             return;
         }
 
         if (e.getClick().isLeftClick()) {
             ItemStack clickedItem = e.getCurrentItem();
             if (clickedItem == null || clickedItem.getType() == Material.AIR) {
-                System.out.println("Clicked item is null or AIR.");
                 return;
             }
 
@@ -129,7 +130,6 @@ public class HubItemListener implements Listener {
                 Material configItemStack = Material.matchMaterial(config.getString(path + ".ItemStack"));
 
                 if (configItemStack == null) {
-                    System.out.println("Material for " + key + " is invalid.");
                     continue;
                 }
 
@@ -150,7 +150,6 @@ public class HubItemListener implements Listener {
                     }
                 }
             }
-            System.out.println("No matching server item found for the click.");
         }
     }
 

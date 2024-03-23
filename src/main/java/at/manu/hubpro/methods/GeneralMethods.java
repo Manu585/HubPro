@@ -1,11 +1,8 @@
 package at.manu.hubpro.methods;
 
 import at.manu.hubpro.configuration.ConfigManager;
-import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import at.manu.hubpro.item.initializer.HubItemInitializer;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
 
 public class GeneralMethods {
 

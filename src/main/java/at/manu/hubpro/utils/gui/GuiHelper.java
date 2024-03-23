@@ -1,9 +1,7 @@
 package at.manu.hubpro.utils.gui;
 
-import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,14 +1,13 @@
 package at.manu.hubpro;
 
-import at.manu.hubpro.board.Board;
 import at.manu.hubpro.configuration.ConfigManager;
-import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
+import at.manu.hubpro.item.initializer.HubItemInitializer;
+import at.manu.hubpro.item.initializer.ServerItemInitializer;
 import at.manu.hubpro.listeners.HubItemListener;
 import at.manu.hubpro.listeners.HubListeners;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 public final class HubPro extends JavaPlugin {
 
@@ -47,6 +46,7 @@ public final class HubPro extends JavaPlugin {
         new ConfigManager();
 
         HubItemInitializer.initHubItems();
+        ServerItemInitializer.initServerItems();
 
         // LISTENERS
         getServer().getPluginManager().registerEvents(new HubListeners(), this);
