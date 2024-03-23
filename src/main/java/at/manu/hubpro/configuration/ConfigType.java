@@ -11,7 +11,8 @@ public class ConfigType {
 
     public static final ConfigType DEFAULT = new ConfigType("Default");
     public static final ConfigType LANGUAGE = new ConfigType("Language");
-    public static final ConfigType[] CORE_TYPES = { DEFAULT, LANGUAGE };
+    public static final ConfigType SERVERITEMS = new ConfigType("Serveritems");
+    public static final ConfigType[] CORE_TYPES = { DEFAULT, LANGUAGE, SERVERITEMS };
 
     private final String string;
 

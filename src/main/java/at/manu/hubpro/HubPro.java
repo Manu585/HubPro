@@ -3,6 +3,7 @@ package at.manu.hubpro;
 import at.manu.hubpro.board.Board;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
+import at.manu.hubpro.listeners.HubItemListener;
 import at.manu.hubpro.listeners.HubListeners;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
@@ -45,11 +46,11 @@ public final class HubPro extends JavaPlugin {
         // CONFIG
         new ConfigManager();
 
+        HubItemInitializer.initHubItems();
+
         // LISTENERS
         getServer().getPluginManager().registerEvents(new HubListeners(), this);
-
-
-        HubItemInitializer.initHubItems();
+        getServer().getPluginManager().registerEvents(new HubItemListener(), this);
     }
 
     public static GeneralMethods getGeneralMethods() {

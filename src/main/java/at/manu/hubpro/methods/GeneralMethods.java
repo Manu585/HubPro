@@ -33,19 +33,6 @@ public class GeneralMethods {
         p.getInventory().clear();
 
         p.getInventory().setItem(0, HubItemInitializer.getTpBowItem());
-    }
-
-    public void createScoreboard(Player p) {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = manager.getNewScoreboard();
-        Objective objective = board.registerNewObjective("test", "dummy");
-
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR_RED);
-        objective.setDisplayName(ChatColor.RED + "BendersMC");
-
-        Score score = objective.getScore(ChatColor.GREEN + "Manunu_");
-        score.setScore(0);
-
-        p.setScoreboard(board);
+        p.getInventory().setItem(4, HubItemInitializer.getServerSelectorItem());
     }
 }

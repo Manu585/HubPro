@@ -6,6 +6,7 @@ import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,7 @@ public class HubListeners implements Listener {
         p.getInventory().addItem(HubItemInitializer.getTpBowItem());
 
         HubPro.getGeneralMethods().sendTitle(p);
-        HubPro.getGeneralMethods().createScoreboard(p);
+        HubPro.getGeneralMethods().insertHubItems(p);
     }
 
     @EventHandler
@@ -89,10 +90,16 @@ public class HubListeners implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getItem() != null) {
                 if (e.getItem().isSimilar(HubItemInitializer.getTpBowItem())) {
-                    new ConnectionHelper().movePlayerToOtherServer(e.getPlayer(), "lobby");
-                    e.getPlayer().sendMessage("Yeah yeah");
+                    //new ConnectionHelper().movePlayerToOtherServer(e.getPlayer(), "lobby");
+                    //e.getPlayer().sendMessage("Yeah yeah");
+                }
+            }
+            if (e.getClickedBlock() != null) {
+                if (e.getClickedBlock().getType().equals(Material.OAK_DOOR)) {
+                        e.setCancelled(true);
                 }
             }
         }
     }
+
 }
