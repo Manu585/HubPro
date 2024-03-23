@@ -3,6 +3,7 @@ package at.manu.hubpro.hubitem.important;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.hubitem.HubItem;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -10,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerItem extends HubItem {
-    public ServerItem(String itemName, ItemStack item) {
+    private String serverName;
+
+    public ServerItem(String serverName, String itemName, ItemStack item) {
         super(itemName, item);
+        this.serverName =serverName;
     }
 
     @Override
@@ -32,7 +36,8 @@ public class ServerItem extends HubItem {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ConfigManager.serverItemsConfig.get().getString("HubPro.ServerItems.lobby.itemname"));
+            String itemNamePath = "HubPro.ServerItems." + getItemName() + ".itemname";
+            meta.setDisplayName(ConfigManager.serverItemsConfig.get().getString(itemNamePath));
             meta.setLore(createLore());
             item.setItemMeta(meta);
         }
@@ -41,5 +46,9 @@ public class ServerItem extends HubItem {
     @Override
     public ChatColor getItemLoreColor() {
         return ChatColor.AQUA;
+    }
+
+    public String getServerName() {
+        return this.serverName;
     }
 }

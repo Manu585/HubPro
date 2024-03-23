@@ -6,6 +6,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigManager {
     public static Config defaultConfig;
@@ -40,15 +44,31 @@ public class ConfigManager {
             config.addDefault("HubPro.HubItems.TpBow", MessageUtil.format("&6TpBow"));
             config.addDefault("HubPro.HubItems.ServerSelector", MessageUtil.format("&2ServerSelector"));
             languageConfig.save();
-        } else if (type == ConfigType.SERVERITEMS) {
+        }  else if (type == ConfigType.SERVERITEMS) {
             config = serverItemsConfig.get();
-            config.addDefault("HubPro.ServerItems.lobby.itemname", MessageUtil.format("&4Lobby"));
-            config.addDefault("HubPro.ServerItems.lobby.itemstack", new ItemStack(Material.GRASS_BLOCK));
+            ensureServerItemsConfig(config);
             serverItemsConfig.save();
+        }
+    }
+    private static void ensureServerItemsConfig(FileConfiguration config) {
+        String basePath = "HubPro.ServerItems";
+        if (!config.isConfigurationSection(basePath)) {
+            // Configuring the "Lobby" item
+            config.set(basePath + ".Lobby.Server", "lobbyServerName"); // Server to connect
+            config.set(basePath + ".Lobby.ItemName", "&6Lobby");
+            config.set(basePath + ".Lobby.ItemStack", "GRASS_BLOCK");
+            config.set(basePath + ".Lobby.menuplace", 14);
+
+            // Configuring the "Survival" item
+            config.set(basePath + ".Survival.Server", "survivalServerName"); // Server to connect
+            config.set(basePath + ".Survival.ItemName", "&2Survival");
+            config.set(basePath + ".Survival.ItemStack", "DIRT");
+            config.set(basePath + ".Survival.menuplace", 15);
+
         }
     }
 
     public static FileConfiguration getConfig() {
-        return ConfigManager.defaultConfig.get();
+        return defaultConfig.get();
     }
 }

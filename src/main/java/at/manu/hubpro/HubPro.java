@@ -14,7 +14,7 @@ public final class HubPro extends JavaPlugin {
 
     private static HubPro instance;
     private static GeneralMethods generalMethods = new GeneralMethods();
-    private BukkitTask scoreboardTask;
+    // private BukkitTask scoreboardTask;
 
     @Override
     public void onEnable() {
@@ -22,16 +22,16 @@ public final class HubPro extends JavaPlugin {
         initializer();
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
 
-        scoreboardTask = getServer().getScheduler().runTaskTimer(this, Board.getInstance(), 0, 1);
+        // scoreboardTask = getServer().getScheduler().runTaskTimer(this, Board.getInstance(), 0, 1);
     }
 
     @Override
     public void onDisable() {
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStopMessage());
 
-        if (scoreboardTask != null && !scoreboardTask.isCancelled()) {
-            scoreboardTask.cancel();
-        }
+        // if (scoreboardTask != null && !scoreboardTask.isCancelled()) {
+        //    scoreboardTask.cancel();
+        //}
     }
 
     // Initializers

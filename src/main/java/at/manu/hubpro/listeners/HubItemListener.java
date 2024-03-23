@@ -1,14 +1,14 @@
 package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.HubPro;
-import at.manu.hubpro.hubitem.HubItem;
+import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
+import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.gui.GuiHelper;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,16 +16,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class HubItemListener implements Listener {
 
-    private GuiHelper gh;
+    private final Map<UUID, GuiHelper> playerGuis = new HashMap<>();
 
     @EventHandler
     public void onArrowLand(ProjectileHitEvent e) {
@@ -65,34 +67,97 @@ public class HubItemListener implements Listener {
 
     @EventHandler
     public void onRightClickWithHubItem(PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (e.getItem() != null) {
-                if (e.getItem().isSimilar(HubItemInitializer.getServerSelectorItem())) {
-                    Player p = e.getPlayer();
-                    Map<Integer, ItemStack> items = new HashMap<>();
-                    items.put(13, HubItemInitializer.getServeritemItem());
-                    gh = new GuiHelper(3, ChatColor.GREEN + "Server Selector", items);
-                    p.openInventory(gh.getInventory());
+        if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.getItem() != null) {
+            if (e.getItem().isSimilar(HubItemInitializer.getServerSelectorItem())) {
+                Player p = e.getPlayer();
+                Map<Integer, ItemStack> items = new HashMap<>();
+
+                FileConfiguration config = ConfigManager.serverItemsConfig.get();
+                ConfigurationSection serverItemsSection = config.getConfigurationSection("HubPro.ServerItems");
+
+                if (serverItemsSection != null) {
+                    for (String key : serverItemsSection.getKeys(false)) {
+                        ConfigurationSection itemSection = serverItemsSection.getConfigurationSection(key);
+                        if (itemSection != null) {
+                            String itemName = MessageUtil.format(itemSection.getString("ItemName"));
+                            Material itemMaterial = Material.getMaterial(itemSection.getString("ItemStack"));
+                            int menuPlace = itemSection.getInt("menuplace");
+                            if (itemMaterial != null && menuPlace >= 0) {
+                                ItemStack itemStack = new ItemStack(itemMaterial);
+                                ItemMeta meta = itemStack.getItemMeta();
+                                if (meta != null) {
+                                    meta.setDisplayName(itemName);
+                                    itemStack.setItemMeta(meta);
+                                }
+                                items.put(menuPlace, itemStack);
+                            }
+                        }
+                    }
                 }
+
+                GuiHelper gh = new GuiHelper(3, ChatColor.GREEN + "Server Selector", items);
+                playerGuis.put(p.getUniqueId(), gh);
+                p.openInventory(gh.getInventory());
             }
         }
     }
 
     @EventHandler
     public void onServerItemLeftClick(InventoryClickEvent e) {
-        if (e.getWhoClicked() instanceof Player) {
-            Player p = (Player) e.getWhoClicked();
-            if (e.getInventory() == gh.getInventory()) {
-                if (e.getClick().isLeftClick()) {
-                    p.sendMessage("Left clicked!");
-                    assert e.getCurrentItem() != null;
-                    if (e.getCurrentItem().isSimilar(HubItemInitializer.getServeritemItem())) {
-                        new ConnectionHelper().movePlayerToOtherServer(p, "lobby");
-                        p.sendMessage(ChatColor.YELLOW + "Its working!");
-                        p.closeInventory();
+        if (!(e.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) e.getWhoClicked();
+
+        GuiHelper gh = playerGuis.get(player.getUniqueId());
+        if (gh == null || !e.getInventory().equals(gh.getInventory())) {
+            System.out.println("Either gh is null or the inventory doesn't match.");
+            return;
+        }
+
+        if (e.getClick().isLeftClick()) {
+            ItemStack clickedItem = e.getCurrentItem();
+            if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+                System.out.println("Clicked item is null or AIR.");
+                return;
+            }
+
+            FileConfiguration config = ConfigManager.serverItemsConfig.get();
+            String basePath = "HubPro.ServerItems";
+
+            for (String key : config.getConfigurationSection(basePath).getKeys(false)) {
+                String path = basePath + "." + key;
+                String configItemName = MessageUtil.format(config.getString(path + ".ItemName"));
+                Material configItemStack = Material.matchMaterial(config.getString(path + ".ItemStack"));
+
+                if (configItemStack == null) {
+                    System.out.println("Material for " + key + " is invalid.");
+                    continue;
+                }
+
+                ItemStack comparisonStack = new ItemStack(configItemStack);
+                ItemMeta meta = comparisonStack.getItemMeta();
+                if (meta != null) {
+                    meta.setDisplayName(configItemName);
+                    comparisonStack.setItemMeta(meta);
+                }
+
+                if (clickedItem.isSimilar(comparisonStack)) {
+                    String server = config.getString(path + ".Server");
+                    if (server != null) {
+                        new ConnectionHelper().movePlayerToOtherServer(player, server);
+                        player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + key + "!");
+                        player.closeInventory();
+                        return;
                     }
                 }
             }
+            System.out.println("No matching server item found for the click.");
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (e.getPlayer() instanceof Player) {
+            playerGuis.remove(e.getPlayer().getUniqueId());
         }
     }
 }
