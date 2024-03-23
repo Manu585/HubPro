@@ -1,15 +1,21 @@
 package at.manu.hubpro.listeners;
 
+import at.manu.hubpro.HubPro;
+import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.hubitem.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -19,16 +25,41 @@ public class HubListeners implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.getInventory().addItem(HubItemInitializer.getTpBowItem());
+
+        HubPro.getGeneralMethods().sendTitle(p);
+        HubPro.getGeneralMethods().createScoreboard(p);
     }
 
     @EventHandler
-    public void onRightClick(PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (e.getItem() != null) {
-                if (e.getItem().isSimilar(HubItemInitializer.getTpBowItem())) {
-                    new ConnectionHelper().movePlayerToOtherServer(e.getPlayer(), "lobby");
-                    e.getPlayer().sendMessage("Yeah yeah");
-                }
+    public void onItemDrop(PlayerDropItemEvent e) {
+        Player p = e.getPlayer();
+        PermissionUtils permissionUtils = PermissionUtils.dropPermission(p);
+        if (!permissionUtils.check()) {
+            p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void inventoryClick(InventoryClickEvent e) {
+        if (e.getWhoClicked() instanceof Player) {
+            Player p = (Player) e.getWhoClicked();
+            PermissionUtils permissionUtils = PermissionUtils.inventoryClickPermission(p);
+            if (!permissionUtils.check()) {
+                p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPickupItem(EntityPickupItemEvent e) {
+        if (e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            PermissionUtils permissionUtils = PermissionUtils.pickupPermission(p);
+            if (!permissionUtils.check()) {
+                p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
+                e.setCancelled(true);
             }
         }
     }
@@ -50,6 +81,18 @@ public class HubListeners implements Listener {
         if (!permissionUtils.check()) {
             p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onRightClick(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getItem() != null) {
+                if (e.getItem().isSimilar(HubItemInitializer.getTpBowItem())) {
+                    new ConnectionHelper().movePlayerToOtherServer(e.getPlayer(), "lobby");
+                    e.getPlayer().sendMessage("Yeah yeah");
+                }
+            }
         }
     }
 }

@@ -34,4 +34,22 @@ public class PermissionUtils {
                 .add("hubpro.build.*", p.hasPermission("hubpro.build.*"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
+
+    public static PermissionUtils dropPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.drop", p.hasPermission("hubpro.drop"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils pickupPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.pickup", p.hasPermission("hubpro.pickup"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils inventoryClickPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.invclick", p.hasPermission("hubpro.invclick"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
 }

@@ -20,16 +20,17 @@ public class MessageUtil {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
-    public static final String PREFIX = ConfigManager.languageConfig.get().getString("HubPro.Chat.Prefix");
-
+    public static String getPrefix() {
+        return ConfigManager.languageConfig.get().getString("HubPro.Chat.Prefix");
+    }
 
     // --SERVER SIDE MESSAGES--
     public static String serverStartMessage() {
-        return format("&2Starting " + PREFIX + " v1.0.0 !");
+        return format("&2Starting " + getPrefix() + " v1.0.0 !");
     }
 
     public static String serverStopMessage() {
-        return format("&2Stopping " + PREFIX + " v1.0.0 !");
+        return format("&2Stopping " + getPrefix() + " v1.0.0 !");
     }
 
 
@@ -39,15 +40,14 @@ public class MessageUtil {
 
         for (Map.Entry<String, Boolean> entry : pc.getPermissionsMap().entrySet()) {
             if (!entry.getValue()) {
-                missingPermissions.append(entry.getKey()).append(", ");
+                missingPermissions.append(entry.getKey()).append(" or ");
             }
         }
 
-        // Remove the last comma and space
         if (missingPermissions.length() > 0) {
-            missingPermissions.setLength(missingPermissions.length() - 2);
+            missingPermissions.setLength(missingPermissions.length() - 4);
         }
 
-        return PREFIX + format(" &cInsufficient permissions! Missing permissions: " + missingPermissions);
+        return getPrefix() + format(" &cInsufficient permissions! Missing permissions: " + missingPermissions);
     }
 }

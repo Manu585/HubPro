@@ -13,4 +13,5 @@ public class ConnectionHelper {
         out.writeUTF(server);
         playerToMove.sendPluginMessage(HubPro.getInstance(), "BungeeCord", out.toByteArray());
     }
+
 }

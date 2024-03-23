@@ -26,6 +26,12 @@ public class ConfigManager {
         } else if (type == ConfigType.LANGUAGE) {
             config = languageConfig.get();
             config.addDefault("HubPro.Chat.Prefix", MessageUtil.format("&7[&dHub&5Pro&7]"));
+            config.addDefault("HubPro.Title.Enabled", true);
+            config.addDefault("HubPro.Title.MainTitle", MessageUtil.format("&b&lWelcome"));
+            config.addDefault("HubPro.Title.SubTitle", MessageUtil.format("&5%player%"));
+            config.addDefault("HubPro.Title.BlendIn", 5);
+            config.addDefault("HubPro.Title.Stay", 60);
+            config.addDefault("HubPro.Title.BlendOut", 5);
             config.addDefault("HubPro.HubItems.TpBow", MessageUtil.format("&6TpBow"));
             languageConfig.save();
         }

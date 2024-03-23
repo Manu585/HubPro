@@ -1,5 +1,6 @@
 package at.manu.hubpro.hubitem.fun;
 
+import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.hubitem.HubItem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +35,7 @@ public class TpBow extends HubItem {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(getConfig().getString("HubPro.HubItems.TpBow"));
+            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow"));
             meta.setLore(getItemLore());
             item.setItemMeta(meta);
         }
