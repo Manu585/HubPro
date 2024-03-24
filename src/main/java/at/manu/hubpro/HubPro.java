@@ -5,6 +5,7 @@ import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.item.initializer.ServerItemInitializer;
 import at.manu.hubpro.listeners.HubItemListener;
 import at.manu.hubpro.listeners.HubListeners;
+import at.manu.hubpro.listeners.PlayerInVoidListener;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +52,7 @@ public final class HubPro extends JavaPlugin {
         // LISTENERS
         getServer().getPluginManager().registerEvents(new HubListeners(), this);
         getServer().getPluginManager().registerEvents(new HubItemListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInVoidListener(), this);
     }
 
     public static GeneralMethods getGeneralMethods() {

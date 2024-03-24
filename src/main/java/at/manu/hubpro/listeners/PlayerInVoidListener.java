@@ -11,10 +11,16 @@ import java.util.Objects;
 public class PlayerInVoidListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        int voidY = ConfigManager.defaultConfig.get().getInt("HubPro.VoidY");
+        if (!ConfigManager.defaultConfig.get().getBoolean("HubPro.VoidTP.Enabled")){
+            return;
+        }
+        int voidY = ConfigManager.defaultConfig.get().getInt("HubPro.VoidTP.VoidY");
         Player player = e.getPlayer();
         if (player.getLocation().getY() < voidY) {
-            player.sendMessage(Objects.requireNonNull(ConfigManager.languageConfig.get().getString("HubPro.Chat.VoidMessage")));
+            String voidMessage = ConfigManager.languageConfig.get().getString("HubPro.Chat.VoidTPMessage");
+            if (voidMessage != null) {
+                player.sendMessage(voidMessage);
+            }
             player.teleport(player.getWorld().getSpawnLocation());
         }
     }
