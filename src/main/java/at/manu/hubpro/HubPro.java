@@ -8,13 +8,16 @@ import at.manu.hubpro.listeners.HubListeners;
 import at.manu.hubpro.listeners.PlayerInVoidListener;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HubPro extends JavaPlugin {
 
+    @Getter
     private static HubPro instance;
+
+    @Getter
     private static GeneralMethods generalMethods = new GeneralMethods();
-    // private BukkitTask scoreboardTask;
 
     @Override
     public void onEnable() {
@@ -22,44 +25,30 @@ public final class HubPro extends JavaPlugin {
         initializer();
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
 
-        // scoreboardTask = getServer().getScheduler().runTaskTimer(this, Board.getInstance(), 0, 1);
     }
 
     @Override
     public void onDisable() {
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStopMessage());
-
-        // if (scoreboardTask != null && !scoreboardTask.isCancelled()) {
-        //    scoreboardTask.cancel();
-        //}
     }
 
-    // Initializers
+
     private void initializer() {
-        // FOR PROXY COMMUNICATION
+        // PROXY COMMUNICATION
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
 
-        // CONFIG
         new ConfigManager();
 
         HubItemInitializer.initHubItems();
         ServerItemInitializer.initServerItems();
 
-        // LISTENERS
-        getServer().getPluginManager().registerEvents(new HubListeners(), this);
-        getServer().getPluginManager().registerEvents(new HubItemListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInVoidListener(), this);
+        getServer().getPluginManager().registerEvents(HubListeners.getInstance(), this);
+        getServer().getPluginManager().registerEvents(HubItemListener.getInstance(), this);
+        getServer().getPluginManager().registerEvents(PlayerInVoidListener.getInstance(), this);
     }
 
-    public static GeneralMethods getGeneralMethods() {
-        return generalMethods;
-    }
-
-    public static HubPro getInstance() {
-        return instance;
-    }
 }

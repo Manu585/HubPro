@@ -1,15 +1,11 @@
 package at.manu.hubpro.configuration;
 
 import at.manu.hubpro.utils.chatutil.MessageUtil;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ConfigManager {
     public static Config defaultConfig;
@@ -35,14 +31,20 @@ public class ConfigManager {
         } else if (type == ConfigType.LANGUAGE) {
             config = languageConfig.get();
             config.addDefault("HubPro.Chat.Prefix", MessageUtil.format("&7[&dHub&5Pro&7]"));
+
             config.addDefault("HubPro.Title.Enabled", true);
             config.addDefault("HubPro.Title.MainTitle", MessageUtil.format("&b&lWelcome"));
             config.addDefault("HubPro.Title.SubTitle", MessageUtil.format("&5%player%"));
             config.addDefault("HubPro.Title.BlendIn", 5);
             config.addDefault("HubPro.Title.Stay", 60);
             config.addDefault("HubPro.Title.BlendOut", 5);
+
             config.addDefault("HubPro.HubItems.TpBow", MessageUtil.format("&6TpBow"));
+            config.addDefault("HubPro.HubItems.TpBow.Arrow", MessageUtil.format("&4Mighty Arrow"));
+
             config.addDefault("HubPro.HubItems.ServerSelector", MessageUtil.format("&2ServerSelector"));
+
+            config.addDefault("HubPro.HubItems.PlayerHider.Name", MessageUtil.format("&7Hide Players"));
             languageConfig.save();
         }  else if (type == ConfigType.SERVERITEMS) {
             config = serverItemsConfig.get();

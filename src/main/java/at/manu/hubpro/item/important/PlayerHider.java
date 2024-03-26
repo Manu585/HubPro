@@ -1,4 +1,4 @@
-package at.manu.hubpro.item.hubitem.funitems;
+package at.manu.hubpro.item.important;
 
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.hubitem.HubItem;
@@ -9,8 +9,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TpBow extends HubItem {
-    public TpBow(String itemName, ItemStack item) {
+public class PlayerHider extends HubItem {
+    public PlayerHider(String itemName, ItemStack item) {
         super(itemName, item);
     }
 
@@ -23,8 +23,7 @@ public class TpBow extends HubItem {
     @Override
     protected List<String> createLore() {
         List<String> lore = new ArrayList<>();
-        lore.add(getItemLoreColor() + "Yoyo");
-        lore.add(getItemLoreColor() + "YOYO");
+        lore.add("Hide Players!");
         return lore;
     }
 
@@ -32,15 +31,14 @@ public class TpBow extends HubItem {
     protected void configureItemMeta() {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow"));
-            meta.setLore(getItemLore());
-            item.setItemMeta(meta);
-        }
+        assert meta != null;
+        meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.Name"));
+        meta.setLore(getItemLore());
+        item.setItemMeta(meta);
     }
 
     @Override
     public ChatColor getItemLoreColor() {
-        return ChatColor.YELLOW;
+        return ChatColor.AQUA;
     }
 }

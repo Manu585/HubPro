@@ -4,6 +4,9 @@ import at.manu.hubpro.HubPro;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.permission.PermissionUtils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +20,11 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubListeners implements Listener {
+
+    @Getter
+    private static final HubListeners instance = new HubListeners();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {

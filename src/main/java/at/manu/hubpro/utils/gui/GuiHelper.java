@@ -1,22 +1,29 @@
 package at.manu.hubpro.utils.gui;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.UUID;
 
+@Getter
 public class GuiHelper {
-
+    private UUID uuid;
     private Inventory inventory;
 
-    public GuiHelper(int rows, String title, Map<Integer, ItemStack> items) {
-        createGUI(rows, title, items);
+    public GuiHelper(UUID uuid, int rows, String title, Map<Integer, ItemStack> items) {
+        createGUI(uuid, rows, title, items);
     }
 
-    private void createGUI(int rows, String title, Map<Integer, ItemStack> items) {
-        inventory = Bukkit.createInventory(null, rows * 9, title);
+    public GuiHelper(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    private void createGUI(UUID uuid, int rows, String title, Map<Integer, ItemStack> items) {
+        inventory = Bukkit.createInventory(Bukkit.getPlayer(uuid), rows * 9, title);
 
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
@@ -26,10 +33,6 @@ public class GuiHelper {
         for (Map.Entry<Integer, ItemStack> entry : items.entrySet()) {
             inventory.setItem(entry.getKey(), entry.getValue());
         }
-    }
-
-    public Inventory getInventory() {
-        return this.inventory;
     }
 
 }
