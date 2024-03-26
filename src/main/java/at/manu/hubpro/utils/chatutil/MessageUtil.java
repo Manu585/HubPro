@@ -3,21 +3,24 @@ package at.manu.hubpro.utils.chatutil;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import net.md_5.bungee.api.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MessageUtil {
-    private static final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    private static final Pattern hexPattern = Pattern.compile("(&#)([a-fA-F0-9]{6})");
+
     public static String format(String msg) {
-        Matcher match = pattern.matcher(msg);
-        while (match.find()) {
-            String color = msg.substring(match.start(), match.end());
-            msg = msg.replace(color, ChatColor.of(color) + "");
-            match = pattern.matcher(msg);
+        Matcher hexMatcher = hexPattern.matcher(msg);
+        while (hexMatcher.find()) {
+            String color = hexMatcher.group(2);
+            String hexColor = ChatColor.of("#" + color).toString();
+            msg = msg.replace(hexMatcher.group(0), hexColor);
         }
-        return ChatColor.translateAlternateColorCodes('&', msg);
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        return msg;
     }
 
     public static String getPrefix() {
@@ -25,11 +28,11 @@ public class MessageUtil {
     }
 
     // --SERVER SIDE MESSAGES--
-    public static String serverStartMessage() {
+    public static @NotNull String serverStartMessage() {
         return format("&2Starting " + getPrefix() + " v1.0.0 !");
     }
 
-    public static String serverStopMessage() {
+    public static @NotNull String serverStopMessage() {
         return format("&2Stopping " + getPrefix() + " v1.0.0 !");
     }
 
