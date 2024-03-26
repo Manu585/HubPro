@@ -39,10 +39,10 @@ public class ConfigManager {
             config.addDefault("HubPro.Title.Stay", 60);
             config.addDefault("HubPro.Title.BlendOut", 5);
 
-            config.addDefault("HubPro.HubItems.TpBow", MessageUtil.format("&6TpBow"));
-            config.addDefault("HubPro.HubItems.TpBow.Arrow", MessageUtil.format("&4Mighty Arrow"));
+            config.addDefault("HubPro.HubItems.TpBow.Name", MessageUtil.format("&6TpBow"));
+            config.addDefault("HubPro.HubItems.TpBow.Arrow.Name", MessageUtil.format("&4Mighty Arrow"));
 
-            config.addDefault("HubPro.HubItems.ServerSelector", MessageUtil.format("&2ServerSelector"));
+            config.addDefault("HubPro.HubItems.ServerSelector", MessageUtil.format("&2Server Selector"));
 
             config.addDefault("HubPro.HubItems.PlayerHider.Name", MessageUtil.format("&7Hide Players"));
             languageConfig.save();

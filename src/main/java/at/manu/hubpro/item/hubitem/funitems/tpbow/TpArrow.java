@@ -32,7 +32,7 @@ public class TpArrow extends HubItem {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow.Arrow"));
+            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow.Arrow.Name"));
             meta.setLore(getItemLore());
             item.setItemMeta(meta);
         }

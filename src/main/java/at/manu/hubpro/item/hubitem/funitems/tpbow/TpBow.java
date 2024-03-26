@@ -35,7 +35,7 @@ public class TpBow extends HubItem {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow"));
+            meta.setDisplayName(ConfigManager.languageConfig.get().getString("HubPro.HubItems.TpBow.Name"));
             meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
