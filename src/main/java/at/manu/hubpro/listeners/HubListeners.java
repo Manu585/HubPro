@@ -33,12 +33,14 @@ public class HubListeners implements Listener {
         Player p = e.getPlayer();
         p.getInventory().addItem(HubItemInitializer.getTpBowItem());
 
-        if (HubPro.getHidePlayers().contains(p)) {
-            Objects.requireNonNull(p.getInventory().getItem(8)).setType(HubItemInitializer.getPlayerShowerItem().getType());
-        }
+        if (HubPro.getHidePlayers() != null) {
+            if (HubPro.getHidePlayers().contains(p)) {
+                Objects.requireNonNull(p.getInventory().getItem(8)).setType(HubItemInitializer.getPlayerShowerItem().getType());
+            }
 
-        for (Player player : HubPro.getHidePlayers()) {
-            player.hidePlayer(HubPro.getInstance(), p);
+            for (Player player : HubPro.getHidePlayers()) {
+                player.hidePlayer(HubPro.getInstance(), p);
+            }
         }
 
         HubPro.getGeneralMethods().sendTitle(p);
