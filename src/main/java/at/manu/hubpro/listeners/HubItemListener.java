@@ -83,7 +83,7 @@ public class HubItemListener implements Listener {
                 }
                 gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, ChatColor.GREEN + "Server Selector", items);
                 e.getPlayer().openInventory(gh.getInventory());
-            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem())) {
+            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem()) || e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
                 if (e.getItem().getType() == Material.GREEN_DYE) {
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         e.getPlayer().hidePlayer(HubPro.getInstance(), online);

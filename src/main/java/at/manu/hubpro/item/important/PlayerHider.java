@@ -23,7 +23,7 @@ public class PlayerHider extends HubItem {
     @Override
     protected List<String> createLore() {
         List<String> lore = new ArrayList<>();
-        lore.add("Hide Players!");
+        lore.add("Toggle Players!");
         return lore;
     }
 
