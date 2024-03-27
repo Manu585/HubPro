@@ -9,7 +9,10 @@ import at.manu.hubpro.listeners.PlayerInVoidListener;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public final class HubPro extends JavaPlugin {
 
@@ -17,11 +20,15 @@ public final class HubPro extends JavaPlugin {
     private static HubPro instance;
 
     @Getter
+    public static List<Player> hidePlayers;
+
+    @Getter
     private static GeneralMethods generalMethods = new GeneralMethods();
 
     @Override
     public void onEnable() {
         instance = this;
+
         initializer();
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
 
