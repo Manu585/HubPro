@@ -1,5 +1,6 @@
 package at.manu.hubpro.listeners;
 
+import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.methods.GeneralMethods;
@@ -9,6 +10,7 @@ import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -81,6 +83,18 @@ public class HubItemListener implements Listener {
                 }
                 gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, ChatColor.GREEN + "Server Selector", items);
                 e.getPlayer().openInventory(gh.getInventory());
+            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem())) {
+                for (Player online : Bukkit.getOnlinePlayers()) {
+                    e.getPlayer().hidePlayer(HubPro.getInstance(), online);
+                }
+                HubPro.hidePlayers.add(e.getPlayer());
+                e.getItem().setType(HubItemInitializer.getPlayerShowerItem().getType());
+            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
+                for (Player online : Bukkit.getOnlinePlayers()) {
+                    e.getPlayer().showPlayer(HubPro.getInstance(), online);
+                }
+                HubPro.hidePlayers.remove(e.getPlayer());
+                e.getItem().setType(HubItemInitializer.getPlayerHiderItem().getType());
             }
         }
     }

@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.Objects;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubListeners implements Listener {
 
@@ -30,6 +32,16 @@ public class HubListeners implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.getInventory().addItem(HubItemInitializer.getTpBowItem());
+
+        if (HubPro.getHidePlayers() != null) {
+            if (HubPro.getHidePlayers().contains(p)) {
+                Objects.requireNonNull(p.getInventory().getItem(8)).setType(HubItemInitializer.getPlayerShowerItem().getType());
+            }
+
+            for (Player player : HubPro.getHidePlayers()) {
+                player.hidePlayer(HubPro.getInstance(), p);
+            }
+        }
 
         HubPro.getGeneralMethods().sendTitle(p);
         HubPro.getGeneralMethods().insertHubItems(p);

@@ -23,23 +23,29 @@ public class HubItemInitializer {
     private static HubItem serverSelector;
     @Getter
     private static HubItem playerHider;
+    @Getter
+    private static HubItem playerShower;
 
     public static void initHubItems() {
         tpBow = new TpBow("TpBow", new ItemStack(Material.BOW));
         arrow = new TpArrow("Arrow", new ItemStack(Material.ARROW));
         serverSelector = new ServerSelector("ServerSelector", new ItemStack(Material.COMPASS));
         playerHider = new PlayerHider("PlayerHider", new ItemStack(Material.GREEN_DYE));
+        playerShower = new PlayerHider("PlayerShower", new ItemStack(Material.RED_DYE));
+
 
         hubItemByName.put(tpBow.getItemName(), tpBow);
         hubItemByName.put(arrow.getItemName(), arrow);
         hubItemByName.put(serverSelector.getItemName(), serverSelector);
         hubItemByName.put(playerHider.getItemName(), playerHider);
+        hubItemByName.put(playerShower.getItemName(), playerShower);
     }
 
     public static ItemStack getTpBowItem() { return tpBow.getItem(); }
     public static ItemStack getArrowItem() { return arrow.getItem(); }
     public static ItemStack getServerSelectorItem() { return serverSelector.getItem(); }
     public static ItemStack getPlayerHiderItem() { return playerHider.getItem(); }
+    public static ItemStack getPlayerShowerItem() { return playerShower.getItem(); }
 
     public static HubItem getServerItemByName(String name) {
         return hubItemByName.get(name);
