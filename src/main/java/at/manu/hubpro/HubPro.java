@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Set;
 
 public final class HubPro extends JavaPlugin {
 
@@ -20,7 +21,7 @@ public final class HubPro extends JavaPlugin {
     private static HubPro instance;
 
     @Getter
-    public static List<Player> hidePlayers;
+    public static Set<Player> hidePlayers;
 
     @Getter
     private static GeneralMethods generalMethods = new GeneralMethods();
