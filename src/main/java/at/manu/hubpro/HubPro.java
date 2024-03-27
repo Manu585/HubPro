@@ -6,32 +6,25 @@ import at.manu.hubpro.item.initializer.ServerItemInitializer;
 import at.manu.hubpro.listeners.HubItemListener;
 import at.manu.hubpro.listeners.HubListeners;
 import at.manu.hubpro.listeners.PlayerInVoidListener;
+import at.manu.hubpro.manager.CooldownManager;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
+import at.manu.hubpro.utils.memoryutil.MemoryUtil;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public final class HubPro extends JavaPlugin {
-
     @Getter
     private static HubPro instance;
-
-    @Getter
-    public static Set<Player> hidePlayers = new HashSet<Player>();
-
     @Getter
     private static GeneralMethods generalMethods = new GeneralMethods();
+    @Getter
+    private static CooldownManager cooldownManager = new CooldownManager();
 
     @Override
     public void onEnable() {
         instance = this;
+        new MemoryUtil();
 
         initializer();
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());

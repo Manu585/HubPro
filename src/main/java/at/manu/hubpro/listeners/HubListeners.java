@@ -22,6 +22,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.Objects;
 
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubListeners implements Listener {
 
@@ -33,12 +35,12 @@ public class HubListeners implements Listener {
         Player p = e.getPlayer();
         p.getInventory().addItem(HubItemInitializer.getTpBowItem());
 
-        if (HubPro.getHidePlayers() != null) {
-            if (HubPro.getHidePlayers().contains(p)) {
+        if (hidePlayers != null) {
+            if (hidePlayers.contains(p)) {
                 Objects.requireNonNull(p.getInventory().getItem(8)).setType(HubItemInitializer.getPlayerShowerItem().getType());
             }
 
-            for (Player player : HubPro.getHidePlayers()) {
+            for (Player player : hidePlayers) {
                 player.hidePlayer(HubPro.getInstance(), p);
             }
         }

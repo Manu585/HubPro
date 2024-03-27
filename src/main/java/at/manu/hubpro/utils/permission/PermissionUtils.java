@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PermissionUtils {
-    private static final Map<String, Boolean> permissionsMap = new HashMap<>();
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.permissionsMap;
 
+public class PermissionUtils {
     public PermissionUtils add(String permission, boolean hasPermission) {
         permissionsMap.put(permission, hasPermission);
         return this;

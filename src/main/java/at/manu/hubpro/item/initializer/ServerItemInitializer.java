@@ -8,12 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.serverItems;
 
 public class ServerItemInitializer {
-    private static final Map<String, ServerItem> serverItems = new HashMap<>();
-
     @Getter
     private static ServerItem serverSelect;
 

@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,10 +60,13 @@ public class GeneralMethods {
 
     public static void TpBowArrowLandAnimation(Player p, Entity e) {
         Location location = e.getLocation();
+        double x_ = location.getX();
+        double y_ = location.getY();
+        double z_ = location.getZ();
         e.remove();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(HubPro.getInstance(), () -> {
-                p.teleport(location);
+                p.teleport(new Location(p.getWorld(), x_, y_, z_, p.getLocation().getYaw(), p.getLocation().getPitch()));
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 2);
             }, 20L);
 
@@ -81,33 +83,6 @@ public class GeneralMethods {
             Bukkit.getScheduler().scheduleSyncDelayedTask(HubPro.getInstance(), () -> {
                     p.spawnParticle(Particle.END_ROD, particleLocation, 1, 0, 0, 0, 0);
                     }, degree / 20L);
-        }
-    }
-
-    public static void getServerItemsFromConfig(Map<Integer, ItemStack> items) {
-        FileConfiguration config = ConfigManager.serverItemsConfig.get();
-        ConfigurationSection serverItemsSection = config.getConfigurationSection("HubPro.ServerItems");
-
-        if (serverItemsSection != null) {
-            for (String key : serverItemsSection.getKeys(false)) {
-                ConfigurationSection itemSection = serverItemsSection.getConfigurationSection(key);
-                if (itemSection != null) {
-                    String itemName = MessageUtil.format(itemSection.getString("ItemName"));
-                    Material itemMaterial = Material.getMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
-                    int menuPlace = itemSection.getInt("menuplace");
-                    if (itemMaterial != null && menuPlace >= 0) {
-                        ItemStack itemStack = new ItemStack(itemMaterial);
-                        ItemMeta meta = itemStack.getItemMeta();
-                        if (meta != null) {
-                            meta.setDisplayName(itemName);
-                            List<String> itemLore = ConfigManager.serverItemsConfig.get().getStringList(key + ".Lore");
-                            meta.setLore(itemLore);
-                            itemStack.setItemMeta(meta);
-                        }
-                        items.put(menuPlace, itemStack);
-                    }
-                }
-            }
         }
     }
 }

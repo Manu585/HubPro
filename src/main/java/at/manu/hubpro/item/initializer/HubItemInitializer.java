@@ -5,16 +5,14 @@ import at.manu.hubpro.item.hubitem.funitems.tpbow.TpArrow;
 import at.manu.hubpro.item.hubitem.funitems.tpbow.TpBow;
 import at.manu.hubpro.item.important.PlayerHider;
 import at.manu.hubpro.item.important.ServerSelector;
+import at.manu.hubpro.utils.memoryutil.MemoryUtil;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hubItemByName;
 
 public class HubItemInitializer {
-    private static final Map<String, HubItem> hubItemByName = new HashMap<>();
-
     @Getter
     private static HubItem tpBow;
     @Getter
@@ -30,9 +28,8 @@ public class HubItemInitializer {
         tpBow = new TpBow("TpBow", new ItemStack(Material.BOW));
         arrow = new TpArrow("Arrow", new ItemStack(Material.ARROW));
         serverSelector = new ServerSelector("ServerSelector", new ItemStack(Material.COMPASS));
-        playerHider = new PlayerHider("PlayerHider", new ItemStack(Material.GREEN_DYE));
+        playerHider = new PlayerHider("PlayerHider", new ItemStack(Material.LIME_DYE));
         playerShower = new PlayerHider("PlayerShower", new ItemStack(Material.RED_DYE));
-
 
         hubItemByName.put(tpBow.getItemName(), tpBow);
         hubItemByName.put(arrow.getItemName(), arrow);

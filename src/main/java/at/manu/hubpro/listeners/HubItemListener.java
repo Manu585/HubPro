@@ -3,6 +3,7 @@ package at.manu.hubpro.listeners;
 import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
+import at.manu.hubpro.manager.CooldownManager;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.gui.GuiHelper;
@@ -18,6 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -26,7 +28,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubItemListener implements Listener {
@@ -83,18 +90,33 @@ public class HubItemListener implements Listener {
                 }
                 gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, ChatColor.GREEN + "Server Selector", items);
                 e.getPlayer().openInventory(gh.getInventory());
+
             } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem())) {
+                if (HubPro.getCooldownManager().isOnCooldown(e.getPlayer(), "hide_players")) {
+                    e.getPlayer().sendMessage("Still on cooldown for " + HubPro.getCooldownManager().getRemainingCooldown(e.getPlayer(),"hide_players") + " seconds");
+                    return;
+                }
+                e.getPlayer().getInventory().setItem(8, HubItemInitializer.getPlayerShowerItem());
                 for (Player online : Bukkit.getOnlinePlayers()) {
                     e.getPlayer().hidePlayer(HubPro.getInstance(), online);
+                    if (online.hasPermission("hubpro.hider.bypass")) e.getPlayer().showPlayer(HubPro.getInstance(), online);
                 }
-                HubPro.hidePlayers.add(e.getPlayer());
-                e.getItem().setType(HubItemInitializer.getPlayerShowerItem().getType());
+                e.getPlayer().sendMessage(MessageUtil.getPrefix() + " " + ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.HideMessage"));
+                hidePlayers.add(e.getPlayer());
+                HubPro.getCooldownManager().setCooldown(e.getPlayer(),"hide_players", 2);
+
             } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
+                if (HubPro.getCooldownManager().isOnCooldown(e.getPlayer(), "show_players")) {
+                    e.getPlayer().sendMessage("Still on cooldown for " + HubPro.getCooldownManager().getRemainingCooldown(e.getPlayer(),"show_players") + " seconds");
+                    return;
+                }
+                e.getPlayer().getInventory().setItem(8, HubItemInitializer.getPlayerHiderItem());
                 for (Player online : Bukkit.getOnlinePlayers()) {
                     e.getPlayer().showPlayer(HubPro.getInstance(), online);
                 }
-                HubPro.hidePlayers.remove(e.getPlayer());
-                e.getItem().setType(HubItemInitializer.getPlayerHiderItem().getType());
+                e.getPlayer().sendMessage(MessageUtil.getPrefix() + " " + ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.ShowMessage"));
+                hidePlayers.remove(e.getPlayer());
+                HubPro.getCooldownManager().setCooldown(e.getPlayer(),"show_players", 2);
             }
         }
     }
@@ -133,5 +155,4 @@ public class HubItemListener implements Listener {
             }
         }
     }
-
 }

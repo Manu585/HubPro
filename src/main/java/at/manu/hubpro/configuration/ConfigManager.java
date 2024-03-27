@@ -45,6 +45,8 @@ public class ConfigManager {
             config.addDefault("HubPro.HubItems.ServerSelector", MessageUtil.format("&2Server Selector"));
 
             config.addDefault("HubPro.HubItems.PlayerHider.Name", MessageUtil.format("&7Hide Players"));
+            config.addDefault("HubPro.HubItems.PlayerHider.HideMessage", MessageUtil.format("&2Successfully hid all other &6players&2!"));
+            config.addDefault("HubPro.HubItems.PlayerHider.ShowMessage", MessageUtil.format("&2Successfully showed all other &6players&2!"));
             languageConfig.save();
         }  else if (type == ConfigType.SERVERITEMS) {
             config = serverItemsConfig.get();
