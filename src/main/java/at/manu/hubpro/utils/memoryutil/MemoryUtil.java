@@ -24,8 +24,8 @@ public class MemoryUtil {
 
 	public MemoryUtil() {
 		hidePlayers = new HashSet<>();
-    	hubItemByName = new HashMap<>();
-    	serverItems = new HashMap<>();
+    		hubItemByName = new HashMap<>();
+    		serverItems = new HashMap<>();
 		permissionsMap = new HashMap<>();
 		cooldowns = new HashMap<>();
 	}
