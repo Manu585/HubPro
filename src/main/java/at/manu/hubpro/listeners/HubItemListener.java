@@ -1,20 +1,14 @@
 package at.manu.hubpro.listeners;
 
-import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.gui.GuiHelper;
-import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,14 +18,8 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubItemListener implements Listener {
@@ -50,71 +38,25 @@ public class HubItemListener implements Listener {
                 Player p = (Player) e.getEntity().getShooter();
                 ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
                 if (itemInMainHand.isSimilar(HubItemInitializer.getTpBowItem())) {
-                    GeneralMethods.TpBowArrowLandAnimation(p, e.getEntity());  // PLAYS ANIMATION AND REMOVES ARROW
+                    GeneralMethods.getInstance().TpBowArrowLandAnimation(p, e.getEntity());  // PLAYS ANIMATION AND REMOVES ARROW
                 }
             }
         }
     }
 
-    // SERVER SELECTOR LISTENER
+
     @EventHandler
     public void onRightClickWithHubItem(PlayerInteractEvent e) {
         if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.getItem() != null) {
             if (e.getItem().isSimilar(HubItemInitializer.getServerSelectorItem())) {
-                Map<Integer, ItemStack> items = new HashMap<>();
-                FileConfiguration config = ConfigManager.serverItemsConfig.get();
-                ConfigurationSection serverItemsSection = config.getConfigurationSection(basePath);
-                if (serverItemsSection != null) {
-                    for (String key : serverItemsSection.getKeys(false)) {
-                        ConfigurationSection itemSection = serverItemsSection.getConfigurationSection(key);
-                        if (itemSection != null) {
-                            Material itemMaterial = Material.getMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
-                            String itemName       = MessageUtil.format(itemSection.getString("ItemName"));
-                            List<String> lore     = itemSection.getStringList("Lore"); lore.replaceAll(MessageUtil::format);
-                            int menuPlace         = itemSection.getInt("menuplace");
-
-                            if (itemMaterial != null && menuPlace >= 0) {
-                                ItemStack itemStack = new ItemStack(itemMaterial);
-                                ItemMeta meta = itemStack.getItemMeta();
-                                if (meta != null) {
-                                    meta.setDisplayName(itemName);
-                                    meta.setLore(lore);
-                                    itemStack.setItemMeta(meta);
-                                }
-                                items.put(menuPlace, itemStack);
-                            }
-                        }
-                    }
-                }
-                gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, ChatColor.GREEN + "Server Selector", items);
+                Map<Integer, ItemStack> items = GeneralMethods.getInstance().generateItemStacksFromConfig(ConfigManager.serverItemsConfig.get(), basePath);
+                gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, MessageUtil.format(ConfigManager.languageConfig.get().getString("HubPro.HubItems.ServerSelector.Name")), items);
                 e.getPlayer().openInventory(gh.getInventory());
-
             } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem())) {
-                if (HubPro.getCooldownManager().isOnCooldown(e.getPlayer(), "hide_players")) {
-                    e.getPlayer().sendMessage("Still on cooldown for " + HubPro.getCooldownManager().getRemainingCooldown(e.getPlayer(),"hide_players") + " seconds");
-                    return;
-                }
-                e.getPlayer().getInventory().setItem(8, HubItemInitializer.getPlayerShowerItem());
-                for (Player online : Bukkit.getOnlinePlayers()) {
-                    e.getPlayer().hidePlayer(HubPro.getInstance(), online);
-                    if (online.hasPermission("hubpro.hider.bypass")) e.getPlayer().showPlayer(HubPro.getInstance(), online);
-                }
-                e.getPlayer().sendMessage(MessageUtil.getPrefix() + " " + ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.HideMessage"));
-                hidePlayers.add(e.getPlayer());
-                HubPro.getCooldownManager().setCooldown(e.getPlayer(),"hide_players", 2);
-
-            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
-                if (HubPro.getCooldownManager().isOnCooldown(e.getPlayer(), "show_players")) {
-                    e.getPlayer().sendMessage("Still on cooldown for " + HubPro.getCooldownManager().getRemainingCooldown(e.getPlayer(),"show_players") + " seconds");
-                    return;
-                }
-                e.getPlayer().getInventory().setItem(8, HubItemInitializer.getPlayerHiderItem());
-                for (Player online : Bukkit.getOnlinePlayers()) {
-                    e.getPlayer().showPlayer(HubPro.getInstance(), online);
-                }
-                e.getPlayer().sendMessage(MessageUtil.getPrefix() + " " + ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.ShowMessage"));
-                hidePlayers.remove(e.getPlayer());
-                HubPro.getCooldownManager().setCooldown(e.getPlayer(),"show_players", 2);
+                GeneralMethods.getInstance().togglePlayerVisibility(e.getPlayer(), true);  // Hide players
+            }
+            else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
+                GeneralMethods.getInstance().togglePlayerVisibility(e.getPlayer(), false); // Show players
             }
         }
     }
@@ -122,35 +64,15 @@ public class HubItemListener implements Listener {
     @EventHandler
     public void onServerItemLeftClick(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) e.getWhoClicked();
         if (gh == null || !e.getInventory().equals(gh.getInventory())) return;
 
-        if (e.getClick().isLeftClick()) {
-            if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
-            FileConfiguration config = ConfigManager.serverItemsConfig.get();
+        ItemStack clickedItem = e.getCurrentItem();
+        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
-            for (String key : Objects.requireNonNull(config.getConfigurationSection(basePath)).getKeys(false)) {
-                String configItemName    = MessageUtil.format(config.getString(basePath + "." + key + ".ItemName"));
-                Material configItemStack = Material.matchMaterial(Objects.requireNonNull(config.getString(basePath + "." + key + ".ItemStack")));
-                List<String> lore        = config.getStringList(basePath + "." + key + ".Lore");
-                lore.replaceAll(MessageUtil::format);
-
-				assert configItemStack != null;
-				ItemStack comparisonStack = new ItemStack(configItemStack);
-                ItemMeta meta = comparisonStack.getItemMeta();
-
-                if (meta != null) { meta.setDisplayName(configItemName); meta.setLore(lore); comparisonStack.setItemMeta(meta); } // Necessary for comparison checks
-
-                if (e.getCurrentItem().isSimilar(comparisonStack)) {
-                    String server = config.getString(basePath + "." + key + ".Server");
-                    if (server != null) {
-                        Player player = (Player) e.getWhoClicked();
-                        new ConnectionHelper().movePlayerToOtherServer(player, server);
-                        player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + key + "!");
-                        player.closeInventory();
-                        return;
-                    }
-                }
-            }
+        boolean actionTaken = GeneralMethods.getInstance().checkAndPerformServerItemAction(player, clickedItem, ConfigManager.serverItemsConfig.get(), basePath);
+        if (actionTaken) {
+            e.setCancelled(true);
         }
     }
 }

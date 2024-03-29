@@ -12,6 +12,8 @@ public class MemoryUtil {
 
 	// -- PLAYER RELATED "MEMORY" --
 	public static Set<Player> hidePlayers;
+	public static Map<UUID, Long> lastToggleTimestamp;
+	public static HashMap<UUID, Long> movement_cooldown;
 
 	// -- ITEM UTILITY "MEMORY" --
 	public static Map<String, HubItem> hubItemByName;
@@ -23,10 +25,12 @@ public class MemoryUtil {
 
 
 	public MemoryUtil() {
-		hidePlayers = new HashSet<>();
-    		hubItemByName = new HashMap<>();
-    		serverItems = new HashMap<>();
+		lastToggleTimestamp = new HashMap<>();
+		movement_cooldown = new HashMap<>();
 		permissionsMap = new HashMap<>();
+		hubItemByName = new HashMap<>();
+		hidePlayers = new HashSet<>();
+    	serverItems = new HashMap<>();
 		cooldowns = new HashMap<>();
 	}
 }

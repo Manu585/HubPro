@@ -2,7 +2,6 @@ package at.manu.hubpro.utils.permission;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static at.manu.hubpro.utils.memoryutil.MemoryUtil.permissionsMap;
@@ -14,7 +13,7 @@ public class PermissionUtils {
     }
 
     public boolean check() {
-        return permissionsMap.containsValue(true);
+        return !permissionsMap.containsValue(true);
     }
 
     public Map<String, Boolean> getPermissionsMap() {

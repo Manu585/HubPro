@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -14,13 +13,14 @@ import java.util.List;
 public abstract class ServerItem {
     private String backendServerName;
     private String serverItemName;
-    private List<String> serverItemLore = new ArrayList<>();
+    private List<String> serverItemLore;
     private ItemStack serverItemstack;
 
-    public ServerItem(String backendServerName, String serverItemName, ItemStack serverItemstack)
+    public ServerItem(String backendServerName, String serverItemName, List<String> serverItemLore, ItemStack serverItemstack)
     {
         this.backendServerName  = backendServerName;
         this.serverItemName     = serverItemName;
+        this.serverItemLore     = serverItemLore;
         this.serverItemstack    = serverItemstack;
 
         configureItemMeta();

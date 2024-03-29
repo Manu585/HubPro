@@ -11,15 +11,10 @@ import java.util.UUID;
 
 @Getter
 public class GuiHelper {
-    private UUID uuid;
     private Inventory inventory;
 
     public GuiHelper(UUID uuid, int rows, String title, Map<Integer, ItemStack> items) {
         createGUI(uuid, rows, title, items);
-    }
-
-    public GuiHelper(UUID uuid) {
-        this.uuid = uuid;
     }
 
     private void createGUI(UUID uuid, int rows, String title, Map<Integer, ItemStack> items) {
@@ -34,5 +29,4 @@ public class GuiHelper {
             inventory.setItem(entry.getKey(), entry.getValue());
         }
     }
-
 }

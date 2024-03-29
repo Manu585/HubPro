@@ -1,14 +1,19 @@
 package at.manu.hubpro.item.initializer;
 
+import at.manu.hubpro.HubPro;
+import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.hubitem.HubItem;
 import at.manu.hubpro.item.hubitem.funitems.tpbow.TpArrow;
 import at.manu.hubpro.item.hubitem.funitems.tpbow.TpBow;
 import at.manu.hubpro.item.important.PlayerHider;
 import at.manu.hubpro.item.important.ServerSelector;
-import at.manu.hubpro.utils.memoryutil.MemoryUtil;
+import at.manu.hubpro.utils.chatutil.MessageUtil;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.stream.Collectors;
 
 import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hubItemByName;
 
@@ -25,17 +30,77 @@ public class HubItemInitializer {
     private static HubItem playerShower;
 
     public static void initHubItems() {
-        tpBow = new TpBow("TpBow", new ItemStack(Material.BOW));
-        arrow = new TpArrow("Arrow", new ItemStack(Material.ARROW));
-        serverSelector = new ServerSelector("ServerSelector", new ItemStack(Material.COMPASS));
-        playerHider = new PlayerHider("PlayerHider", new ItemStack(Material.LIME_DYE));
-        playerShower = new PlayerHider("PlayerShower", new ItemStack(Material.RED_DYE));
+        FileConfiguration config = ConfigManager.languageConfig.get();
+        String path = "HubPro.HubItems.";
+        if (config != null) {
+            try {
+                Material tpBowMaterial = Material.getMaterial(config.getString(path + "TpBow.ItemStack", "BOW"));
+                if (tpBowMaterial == null) {
+                    tpBowMaterial = Material.BOW;
+                }
+                tpBow = new TpBow(MessageUtil.format(config.getString(path + "TpBow.Name")),
+                        config.getStringList(path + "TpBow.Lore").stream()
+                                .map(MessageUtil::format)
+                                .collect(Collectors.toList()),
+                        new ItemStack(tpBowMaterial));
 
-        hubItemByName.put(tpBow.getItemName(), tpBow);
-        hubItemByName.put(arrow.getItemName(), arrow);
-        hubItemByName.put(serverSelector.getItemName(), serverSelector);
-        hubItemByName.put(playerHider.getItemName(), playerHider);
-        hubItemByName.put(playerShower.getItemName(), playerShower);
+                // -------------------------------------------------------------------------------------------------- //
+
+                Material arrowMaterial = Material.getMaterial(config.getString(path + "TpBow.Arrow.ItemStack", "ARROW"));
+                if (arrowMaterial == null) {
+                    arrowMaterial = Material.ARROW;
+                }
+                arrow = new TpArrow(MessageUtil.format(config.getString(path + "TpBow.Arrow.Name")),
+                        config.getStringList(path + "TpBow.Arrow.Lore").stream()
+                                .map(MessageUtil::format)
+                                .collect(Collectors.toList()),
+                        new ItemStack(arrowMaterial));
+
+                // -------------------------------------------------------------------------------------------------- //
+
+                Material serverSelectorMaterial = Material.getMaterial(config.getString(path + "ServerSelector.ItemStack", "COMPASS"));
+                if (serverSelectorMaterial == null) {
+                    serverSelectorMaterial = Material.COMPASS;
+                }
+                serverSelector = new ServerSelector(MessageUtil.format(config.getString(path + "ServerSelector.Name")),
+                        config.getStringList(path + "ServerSelector.Lore").stream()
+                                .map(MessageUtil::format)
+                                .collect(Collectors.toList()),
+                        new ItemStack(serverSelectorMaterial));
+
+                // -------------------------------------------------------------------------------------------------- //
+
+                Material playerHiderMaterial = Material.getMaterial(config.getString(path + "PlayerHider.ItemStack", "LIME_DYE"));
+                if (playerHiderMaterial == null) {
+                    playerHiderMaterial = Material.LIME_DYE;
+                }
+                playerHider = new PlayerHider(MessageUtil.format(config.getString(path + "PlayerHider.Name")),
+                        config.getStringList(path + "PlayerHider.Lore").stream()
+                                .map(MessageUtil::format)
+                                .collect(Collectors.toList()),
+                        new ItemStack(playerHiderMaterial));
+
+                // -------------------------------------------------------------------------------------------------- //
+
+                Material playerShowerMaterial = Material.getMaterial(config.getString(path + "PlayerShower.ItemStack", "RED_DYE"));
+                if (playerShowerMaterial == null) {
+                    playerShowerMaterial = Material.RED_DYE;
+                }
+                playerShower = new PlayerHider(MessageUtil.format(config.getString(path + "PlayerShower.Name")),
+                        config.getStringList(path + "PlayerShower.Lore").stream()
+                                .map(MessageUtil::format)
+                                .collect(Collectors.toList()),
+                        new ItemStack(playerShowerMaterial));
+
+                // -------------------------------------------------------------------------------------------------- //
+            } catch (Exception e) { HubPro.getInstance().getLogger().severe("Couldn't load Hub Items config values!" + e); }
+
+            hubItemByName.put(tpBow.getItemName(), tpBow);
+            hubItemByName.put(arrow.getItemName(), arrow);
+            hubItemByName.put(serverSelector.getItemName(), serverSelector);
+            hubItemByName.put(playerHider.getItemName(), playerHider);
+            hubItemByName.put(playerShower.getItemName(), playerShower);
+        }
     }
 
     public static ItemStack getTpBowItem() { return tpBow.getItem(); }

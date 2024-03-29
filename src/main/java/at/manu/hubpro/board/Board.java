@@ -4,6 +4,7 @@ import at.manu.hubpro.HubPro;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Board implements Runnable, PluginMessageListener {
+    @Getter
     private final static Board instance = new Board();
     private Map<String, Integer> serverPlayerCounts = new HashMap<>();
     private List<String> listOfServersYouTrack = Arrays.asList("lobby");
@@ -75,10 +77,6 @@ public class Board implements Runnable, PluginMessageListener {
             scoreboard = player.getScoreboard();
         }
         player.setScoreboard(scoreboard);
-    }
-
-    public static Board getInstance() {
-        return instance;
     }
 
     @Override
