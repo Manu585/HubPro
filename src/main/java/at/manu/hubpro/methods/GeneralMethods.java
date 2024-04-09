@@ -74,7 +74,7 @@ public class GeneralMethods {
             String materialName = itemSection.getString("ItemStack");
 			assert materialName != null;
 			Material material = Material.matchMaterial(materialName);
-            String action = itemSection.getString("action");
+            String action = itemSection.getString("Action");
             String serverName = itemSection.getString("Server");
 
 			assert action != null;
@@ -147,18 +147,18 @@ public class GeneralMethods {
     public void togglePlayerVisibility(Player player, boolean hide) {
         String cooldownKey = hide ? "hide_players" : "show_players";
         String notificationCooldownKey = cooldownKey + "_notification";
-        String messageKey = hide ? "HubPro.HubItems.PlayerHider.HideMessage" : "HubPro.HubItems.PlayerShower.ShowMessage";
+        String messageKey = hide ? "HubPro.Items.PlayerHider.HideMessage" : "HubPro.Items.PlayerShower.ShowMessage";
         ItemStack newItem = hide ? HubItemInitializer.getPlayerShowerItem() : HubItemInitializer.getPlayerHiderItem();
 
         if (HubPro.getCooldownManager().isOnCooldown(player, cooldownKey)) {
             if (!HubPro.getCooldownManager().isOnCooldown(player, notificationCooldownKey)) {
-                String spamPreventMessage = ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.SpamMessage");
+                String spamPreventMessage = ConfigManager.languageConfig.get().getString("HubPro.Items.PlayerHider.SpamMessage");
                 assert spamPreventMessage != null;
                 if (spamPreventMessage.contains("%seconds%")) {
                     spamPreventMessage = spamPreventMessage.replace("%seconds%", String.valueOf(HubPro.getCooldownManager().getRemainingCooldown(player, cooldownKey)));
                 }
                 player.sendMessage(MessageUtil.format(spamPreventMessage));
-                HubPro.getCooldownManager().setCooldown(player, notificationCooldownKey, ConfigManager.languageConfig.get().getInt("HubPro.HubItems.PlayerHider.spamCooldown")); // Prevent spamming the message
+                HubPro.getCooldownManager().setCooldown(player, notificationCooldownKey, ConfigManager.defaultConfig.get().getInt("HubPro.Items.PlayerHider.SpamCooldown"));
             }
             return;
         }
@@ -183,7 +183,7 @@ public class GeneralMethods {
         } else {
             hidePlayers.remove(player);
         }
-        HubPro.getCooldownManager().setCooldown(player, cooldownKey, 5);
+        HubPro.getCooldownManager().setCooldown(player, cooldownKey, ConfigManager.defaultConfig.get().getInt("HubPro.Items.PlayerHider.Cooldown"));
     }
 
 
