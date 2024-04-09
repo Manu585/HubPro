@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.utils.proxyconnection;
 
 import at.manu.hubpro.HubPro;
@@ -6,7 +10,6 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 
 public class ConnectionHelper {
-
     public void movePlayerToOtherServer(Player playerToMove, String server) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");

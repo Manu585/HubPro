@@ -1,20 +1,23 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.utils.permission;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class PermissionUtils {
-    private static final Map<String, Boolean> permissionsMap = new HashMap<>();
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.permissionsMap;
 
-    public PermissionUtils add(String permission, boolean hasPermission) {
+public class PermissionUtils {
+	public PermissionUtils add(String permission, boolean hasPermission) {
         permissionsMap.put(permission, hasPermission);
         return this;
     }
 
     public boolean check() {
-        return permissionsMap.containsValue(true);
+        return !permissionsMap.containsValue(true);
     }
 
     public Map<String, Boolean> getPermissionsMap() {
@@ -32,6 +35,30 @@ public class PermissionUtils {
         return new PermissionUtils()
                 .add("hubpro.build.place", p.hasPermission("hubpro.build.place"))
                 .add("hubpro.build.*", p.hasPermission("hubpro.build.*"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils dropPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.drop", p.hasPermission("hubpro.drop"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils pickupPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.pickup", p.hasPermission("hubpro.pickup"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils inventoryClickPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.invclick", p.hasPermission("hubpro.invclick"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils entityHurtPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.damage", p.hasPermission("hubpro.damage"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 }

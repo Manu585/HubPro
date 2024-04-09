@@ -1,35 +1,43 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.utils.chatutil;
 
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import net.md_5.bungee.api.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MessageUtil {
-    private static final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    private static final Pattern hexPattern = Pattern.compile("(&#)([a-fA-F0-9]{6})");
+
     public static String format(String msg) {
-        Matcher match = pattern.matcher(msg);
-        while (match.find()) {
-            String color = msg.substring(match.start(), match.end());
-            msg = msg.replace(color, ChatColor.of(color) + "");
-            match = pattern.matcher(msg);
+        Matcher hexMatcher = hexPattern.matcher(msg);
+        while (hexMatcher.find()) {
+            String color = hexMatcher.group(2);
+            String hexColor = ChatColor.of("#" + color).toString();
+            msg = msg.replace(hexMatcher.group(0), hexColor);
         }
-        return ChatColor.translateAlternateColorCodes('&', msg);
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        return msg;
     }
 
-    public static final String PREFIX = ConfigManager.languageConfig.get().getString("HubPro.Chat.Prefix");
-
+    public static String getPrefix() {
+        return ConfigManager.languageConfig.get().getString(MessageUtil.format("HubPro.Chat.Prefix"));
+    }
 
     // --SERVER SIDE MESSAGES--
-    public static String serverStartMessage() {
-        return format("&2Starting " + PREFIX + " v1.0.0 !");
+    public static @NotNull String serverStartMessage() {
+        return format("&2Starting " + getPrefix() + " v1.0.0 !");
     }
 
-    public static String serverStopMessage() {
-        return format("&2Stopping " + PREFIX + " v1.0.0 !");
+    public static @NotNull String serverStopMessage() {
+        return format("&2Stopping " + getPrefix() + " v1.0.0 !");
     }
 
 
@@ -39,15 +47,14 @@ public class MessageUtil {
 
         for (Map.Entry<String, Boolean> entry : pc.getPermissionsMap().entrySet()) {
             if (!entry.getValue()) {
-                missingPermissions.append(entry.getKey()).append(", ");
+                missingPermissions.append(entry.getKey()).append(" or ");
             }
         }
 
-        // Remove the last comma and space
         if (missingPermissions.length() > 0) {
-            missingPermissions.setLength(missingPermissions.length() - 2);
+            missingPermissions.setLength(missingPermissions.length() - 4);
         }
 
-        return PREFIX + format(" &cInsufficient permissions! Missing permissions: " + missingPermissions);
+        return getPrefix() + format(" &cInsufficient permissions! Missing permissions: " + missingPermissions);
     }
 }
