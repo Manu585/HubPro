@@ -1,9 +1,15 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.methods;
 
 import at.manu.hubpro.HubPro;
+import at.manu.hubpro.configuration.Config;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
+import at.manu.hubpro.utils.gui.GuiHelper;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +33,7 @@ import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneralMethods {
 
+    // SINGLETON
     private static GeneralMethods instance;
 
     public static synchronized GeneralMethods getInstance() {
@@ -36,56 +44,14 @@ public class GeneralMethods {
     }
 
     /**
-     * Generates a map from item positions to item stacks based on a configuration section.
-     *
-     * @param config The configuration from which the items are loaded.
-     * @param sectionPath The path to the section in the configuration that contains the items.
-     * @return A map from Integer (inventory slot) to ItemStacks.
-     */
-    public Map<Integer, ItemStack> generateItemStacksFromConfig(FileConfiguration config, String sectionPath) {
-        Map<Integer, ItemStack> items = new HashMap<>();
-        ConfigurationSection section = config.getConfigurationSection(sectionPath);
-
-        if (section == null) {
-            return items;
-        }
-
-        for (String key : section.getKeys(false)) {
-            ConfigurationSection itemSection = section.getConfigurationSection(key);
-            if (itemSection != null) {
-                Material material = Material.getMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
-                String name = MessageUtil.format(itemSection.getString("ItemName"));
-                List<String> lore = itemSection.getStringList("Lore").stream().map(MessageUtil::format).collect(Collectors.toList());
-                int slot = itemSection.getInt("menuplace", -1);
-
-                if (material != null && slot >= 0) {
-                    ItemStack item = new ItemStack(material);
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta != null) {
-                        meta.setDisplayName(name);
-                        meta.setLore(lore);
-                        item.setItemMeta(meta);
-                    }
-                    items.put(slot, item);
-                }
-            } else {
-                System.out.println("Section is null. Check path: " + sectionPath);
-            }
-        }
-        return items;
-    }
-
-
-
-    /**
      * Checks if a clicked ItemStack matches a server item defined in the configuration and performs an action if a match is found.
      *
-     * @param player The player performing the action.
+     * @param player      The player performing the action.
      * @param clickedItem The ItemStack that was clicked on.
-     * @param config The FileConfiguration from which the server items are read.
+     * @param config      The FileConfiguration from which the server items are read.
      * @param sectionPath The path within the configuration where the server items are defined.
      * @return true if an action was performed, otherwise false.
-
+     * <p>
      * This method iterates through all entries under the specified configuration path. For each entry, it attempts to match
      * the item defined in the configuration with the clicked item. If the material matches, it also checks for a match on the display name and lore.
      * If these match, the defined action is performed (e.g., redirecting the player to another server). This method can be used to implement a clean and reusable logic
@@ -93,38 +59,50 @@ public class GeneralMethods {
      */
     public boolean checkAndPerformServerItemAction(Player player, ItemStack clickedItem, FileConfiguration config, String sectionPath) {
         ConfigurationSection section = config.getConfigurationSection(sectionPath);
-        if (section == null) {
-            return false;
-        }
+
+        if (section == null) return false;
 
         for (String key : section.getKeys(false)) {
-            String itemName = MessageUtil.format(config.getString(sectionPath + "." + key + ".ItemName"));
-            List<String> lore = config.getStringList(sectionPath + "." + key + ".Lore").stream().map(MessageUtil::format).collect(Collectors.toList());
-            Material material = Material.matchMaterial(Objects.requireNonNull(config.getString(sectionPath + "." + key + ".ItemStack")));
-            String serverName = config.getString(sectionPath + "." + key + ".Server");
+            ConfigurationSection itemSection = section.getConfigurationSection(key);
+            if (itemSection == null) continue;
 
-            if (material != null && clickedItem.getType() == material) {
-                ItemStack comparisonStack = new ItemStack(material);
-                ItemMeta meta = comparisonStack.getItemMeta();
-                if (meta != null) {
-                    meta.setDisplayName(itemName);
-                    meta.setLore(lore);
-                    comparisonStack.setItemMeta(meta);
-                }
+            String itemName = MessageUtil.format(itemSection.getString("ItemName"));
+            List<String> lore = itemSection.getStringList("ItemLore").stream()
+                    .map(MessageUtil::format)
+                    .collect(Collectors.toList());
 
-                if (clickedItem.isSimilar(comparisonStack)) {
-                    if (serverName != null) {
-                        new ConnectionHelper().movePlayerToOtherServer(player, serverName);
-                        player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + key + "!");
-                        player.closeInventory();
-                        return true;
+            String materialName = itemSection.getString("ItemStack");
+			assert materialName != null;
+			Material material = Material.matchMaterial(materialName);
+            String action = itemSection.getString("action");
+            String serverName = itemSection.getString("Server");
+
+			assert action != null;
+			if (action.equalsIgnoreCase("CONNECT")) {
+                if (material != null && clickedItem.getType() == material) {
+                    ItemStack comparisonStack = new ItemStack(material);
+                    ItemMeta meta = comparisonStack.getItemMeta();
+                    if (meta != null) {
+                        meta.setDisplayName(itemName);
+                        meta.setLore(lore);
+                        comparisonStack.setItemMeta(meta);
+                    }
+
+                    if (clickedItem.isSimilar(comparisonStack)) {
+                        if (serverName != null) {
+                            new ConnectionHelper().movePlayerToOtherServer(player, serverName);
+                            player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + key + "!");
+                            player.closeInventory();
+                            return true;
+                        }
                     }
                 }
+            } else {
+                return false;
             }
         }
         return false;
     }
-
 
 
     /**
@@ -160,12 +138,11 @@ public class GeneralMethods {
     }
 
 
-
     /**
      * Hides other players from the player.
      *
      * @param player The player who will be affected by hiding others
-     * @param hide If the other players should be hidden or seen
+     * @param hide   If the other players should be hidden or seen
      */
     public void togglePlayerVisibility(Player player, boolean hide) {
         String cooldownKey = hide ? "hide_players" : "show_players";
@@ -176,8 +153,8 @@ public class GeneralMethods {
         if (HubPro.getCooldownManager().isOnCooldown(player, cooldownKey)) {
             if (!HubPro.getCooldownManager().isOnCooldown(player, notificationCooldownKey)) {
                 String spamPreventMessage = ConfigManager.languageConfig.get().getString("HubPro.HubItems.PlayerHider.SpamMessage");
-				assert spamPreventMessage != null;
-				if (spamPreventMessage.contains("%seconds%")) {
+                assert spamPreventMessage != null;
+                if (spamPreventMessage.contains("%seconds%")) {
                     spamPreventMessage = spamPreventMessage.replace("%seconds%", String.valueOf(HubPro.getCooldownManager().getRemainingCooldown(player, cooldownKey)));
                 }
                 player.sendMessage(MessageUtil.format(spamPreventMessage));
@@ -210,7 +187,6 @@ public class GeneralMethods {
     }
 
 
-
     /**
      * Gives the player the starter items upon joining the server.
      *
@@ -230,7 +206,6 @@ public class GeneralMethods {
     }
 
 
-
     /**
      * Plays an animation to the client and also teleporting the player
      * upon shooting with a bow.
@@ -238,7 +213,7 @@ public class GeneralMethods {
      * @param player The player to teleport and client to play the particles.
      * @param entity The arrow.
      */
-    public void TpBowArrowLandAnimation(Player player, Entity entity) {
+    public void TpBowArrowLandAnimation(@NotNull Player player, @NotNull Entity entity) {
         Location location = entity.getLocation();
         double x_ = location.getX();
         double y_ = location.getY();
@@ -246,9 +221,9 @@ public class GeneralMethods {
         entity.remove();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(HubPro.getInstance(), () -> {
-                player.teleport(new Location(player.getWorld(), x_, y_, z_, player.getLocation().getYaw(), player.getLocation().getPitch()));
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 2);
-            }, 20L);
+            player.teleport(new Location(player.getWorld(), x_, y_, z_, player.getLocation().getYaw(), player.getLocation().getPitch()));
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 2);
+        }, 20L);
 
         player.spawnParticle(Particle.FLAME, location, 100, 0, 0, 0, 0.1);
         player.spawnParticle(Particle.SMOKE_LARGE, location, 100, 0, 0, 0, 0.1);
@@ -262,5 +237,45 @@ public class GeneralMethods {
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(HubPro.getInstance(), () -> player.spawnParticle(Particle.END_ROD, particleLocation, 1, 0, 0, 0, 0), degree / 20L);
         }
+    }
+
+    public void openGUIFromConfig(Config config, Player player) {
+        FileConfiguration fileConfig = config.get();
+
+        String guiTitle       = fileConfig.getString("Title");
+        int guiSize           = fileConfig.getInt("Size");
+        boolean guiFill       = fileConfig.getBoolean("Fill_rest_with_items");
+        Material fillMaterial = Material.matchMaterial(fileConfig.getString("rest_items", "GRAY_STAINED_GLASS_PANE"));
+
+        Map<Integer, ItemStack> items = new HashMap<>();
+        ConfigurationSection itemsSection = fileConfig.getConfigurationSection("items");
+
+        if (itemsSection != null) {
+            for (String key : itemsSection.getKeys(false)) {
+                ConfigurationSection itemSection = itemsSection.getConfigurationSection(key);
+                if (itemSection != null) {
+                    List<String> lore = itemSection.getStringList("ItemLore").stream()
+                            .map(MessageUtil::format)
+                            .collect(Collectors.toList());
+
+                    Material material = Material.matchMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
+                    String itemName   = itemSection.getString("ItemName");
+                    int itemPlace     = itemSection.getInt("MenuPlace");
+
+                    if (material != null) {
+                        ItemStack item = new ItemStack(material);
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta != null) {
+                            meta.setDisplayName(MessageUtil.format(itemName));
+                            meta.setLore(lore);
+                            item.setItemMeta(meta);
+                        }
+                        items.put(itemPlace, item);
+                    }
+                }
+            }
+        }
+        GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial);
+        player.openInventory(gui.getInventory());
     }
 }

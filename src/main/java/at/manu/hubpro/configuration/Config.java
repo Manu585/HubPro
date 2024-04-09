@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by PK     						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.configuration;
 
 import at.manu.hubpro.HubPro;
@@ -10,7 +14,6 @@ import java.io.IOException;
 
 public class Config {
     private final HubPro plugin;
-
     private final File file;
     private final FileConfiguration config;
 
@@ -21,10 +24,24 @@ public class Config {
      */
     public Config(final File file) {
         this.plugin = HubPro.getInstance();
-        this.file = new File(this.plugin.getDataFolder() + File.separator + file);
+        File dataFolder = this.plugin.getDataFolder();
+
+        // Attempt to normalize the file path to prevent path duplication.
+        String filePath = file.getPath();
+        String dataFolderPath = dataFolder.getPath();
+
+        // Check if the filePath already starts with the data folder path to prevent duplication.
+        if (!filePath.startsWith(dataFolderPath)) {
+            this.file = new File(dataFolder, filePath);
+        } else {
+            this.file = file;
+        }
+
         this.config = YamlConfiguration.loadConfiguration(this.file);
         this.reload();
     }
+
+
 
     /**
      * Creates a file for the {@link FileConfiguration} object. If there are
@@ -34,7 +51,7 @@ public class Config {
     public void create() {
         if (!this.file.getParentFile().exists()) {
             try {
-                this.file.getParentFile().mkdir();
+                this.file.getParentFile().mkdirs();
                 this.plugin.getLogger().info("Generating new directory for " + this.file.getName() + "!");
             } catch (final Exception e) {
                 this.plugin.getLogger().info("Failed to generate directory!");

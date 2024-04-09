@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.utils.chatutil.MessageUtil;

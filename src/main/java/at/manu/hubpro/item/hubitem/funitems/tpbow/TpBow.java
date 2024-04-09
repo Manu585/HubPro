@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.item.hubitem.funitems.tpbow;
 
 import at.manu.hubpro.item.hubitem.HubItem;

@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.HubPro;
@@ -12,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -102,5 +107,16 @@ public class GeneralListeners implements Listener {
 				e.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onEntityHurt(EntityDamageByEntityEvent e) {
+		if (e.getEntity() instanceof Player) {
+    		Player p = (Player) e.getEntity();
+    		PermissionUtils permissionUtils = PermissionUtils.entityHurtPermission(p);
+    		if (permissionUtils.check()) {
+    			e.setCancelled(true);
+    		}
+    	}
 	}
 }

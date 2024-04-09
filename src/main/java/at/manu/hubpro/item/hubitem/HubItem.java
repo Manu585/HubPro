@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.item.hubitem;
 
 import lombok.Getter;
@@ -6,6 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Setter
@@ -15,10 +20,26 @@ public abstract class HubItem {
     private List<String> itemLore;
     private ItemStack item;
 
+    @Nullable
+    private String action;
+    @Nullable
+    private String menu;
+
+    public HubItem(String itemName, List<String> itemLore, ItemStack item, @Nullable String action, @Nullable String menu) {
+        this.itemName = itemName;
+        this.itemLore = itemLore;
+        this.item = item;
+
+        this.action = action;
+        this.menu = menu;
+        configureItem();
+    }
+
     public HubItem(String itemName, List<String> itemLore, ItemStack item) {
         this.itemName = itemName;
         this.itemLore = itemLore;
         this.item = item;
+
         configureItem();
     }
 

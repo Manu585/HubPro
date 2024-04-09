@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.utils.permission;
 
 import org.bukkit.entity.Player;
@@ -7,7 +11,7 @@ import java.util.Map;
 import static at.manu.hubpro.utils.memoryutil.MemoryUtil.permissionsMap;
 
 public class PermissionUtils {
-    public PermissionUtils add(String permission, boolean hasPermission) {
+	public PermissionUtils add(String permission, boolean hasPermission) {
         permissionsMap.put(permission, hasPermission);
         return this;
     }
@@ -49,6 +53,12 @@ public class PermissionUtils {
     public static PermissionUtils inventoryClickPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.invclick", p.hasPermission("hubpro.invclick"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils entityHurtPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.damage", p.hasPermission("hubpro.damage"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 }

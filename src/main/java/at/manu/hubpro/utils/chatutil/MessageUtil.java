@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.utils.chatutil;
 
 import at.manu.hubpro.configuration.ConfigManager;

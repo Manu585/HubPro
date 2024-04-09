@@ -1,14 +1,18 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.listeners;
 
+import at.manu.hubpro.configuration.Config;
 import at.manu.hubpro.configuration.ConfigManager;
+import at.manu.hubpro.item.hubitem.HubItem;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.methods.GeneralMethods;
-import at.manu.hubpro.utils.chatutil.MessageUtil;
-import at.manu.hubpro.utils.gui.GuiHelper;
+import at.manu.hubpro.utils.memoryutil.MemoryUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,18 +23,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubItemListener implements Listener {
 
     @Getter
     private static final HubItemListener instance = new HubItemListener();
-    private final String basePath = "HubPro.ServerItems";
-    private GuiHelper gh;
 
 
-	// TP-BOW LISTENER
+    // TP-BOW LISTENER
     @EventHandler
     public void onArrowLand(ProjectileHitEvent e) {
         if (e.getEntity().getType() == EntityType.ARROW) {
@@ -49,30 +49,42 @@ public class HubItemListener implements Listener {
     public void onRightClickWithHubItem(PlayerInteractEvent e) {
         if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.getItem() != null) {
             if (e.getItem().isSimilar(HubItemInitializer.getServerSelectorItem())) {
-                Map<Integer, ItemStack> items = GeneralMethods.getInstance().generateItemStacksFromConfig(ConfigManager.serverItemsConfig.get(), basePath);
-                gh = new GuiHelper(e.getPlayer().getUniqueId(), 3, MessageUtil.format(ConfigManager.languageConfig.get().getString("HubPro.HubItems.ServerSelector.Name")), items);
-                e.getPlayer().openInventory(gh.getInventory());
+                HubItem server_selector = HubItemInitializer.getServerSelector();
+                String action = server_selector.getAction();
+                String menu = server_selector.getMenu();
+                if (action != null && action.equalsIgnoreCase("OPEN_MENU")) {
+                    Config config = MemoryUtil.menusConfigs.get(menu);
+                    if (config != null) {
+                        GeneralMethods.getInstance().openGUIFromConfig(config, e.getPlayer());
+                    }
+                }
             } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerHiderItem())) {
                 GeneralMethods.getInstance().togglePlayerVisibility(e.getPlayer(), true);  // Hide players
-            }
-            else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
+            } else if (e.getItem().isSimilar(HubItemInitializer.getPlayerShowerItem())) {
                 GeneralMethods.getInstance().togglePlayerVisibility(e.getPlayer(), false); // Show players
             }
         }
     }
 
     @EventHandler
-    public void onServerItemLeftClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) e.getWhoClicked();
-        if (gh == null || !e.getInventory().equals(gh.getInventory())) return;
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
-        ItemStack clickedItem = e.getCurrentItem();
-        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+        Player player = (Player) event.getWhoClicked();
+        ItemStack clickedItem = event.getCurrentItem();
 
-        boolean actionTaken = GeneralMethods.getInstance().checkAndPerformServerItemAction(player, clickedItem, ConfigManager.serverItemsConfig.get(), basePath);
-        if (actionTaken) {
-            e.setCancelled(true);
+        if (clickedItem == null || !clickedItem.hasItemMeta()) return;
+
+        Config menuConfig = ConfigManager.getMenu_serverSelectorConfig();
+        if (menuConfig == null) return;
+
+        event.setCancelled(true);
+
+        boolean actionPerformed = GeneralMethods.getInstance().checkAndPerformServerItemAction(player, clickedItem, menuConfig.get(), "items");
+        if (actionPerformed) {
+            player.closeInventory();
+        } else {
+            event.setCancelled(true);
         }
     }
 }

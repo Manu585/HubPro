@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------
+// -						Class created by Manu585						-
+// --------------------------------------------------------------------------
+
 package at.manu.hubpro.item.initializer;
 
 import at.manu.hubpro.HubPro;
@@ -30,7 +34,7 @@ public class HubItemInitializer {
     private static HubItem playerShower;
 
     public static void initHubItems() {
-        FileConfiguration config = ConfigManager.languageConfig.get();
+        FileConfiguration config = ConfigManager.itemsConfig.get();
         String path = "HubPro.HubItems.";
         if (config != null) {
             try {
@@ -66,7 +70,9 @@ public class HubItemInitializer {
                         config.getStringList(path + "ServerSelector.Lore").stream()
                                 .map(MessageUtil::format)
                                 .collect(Collectors.toList()),
-                        new ItemStack(serverSelectorMaterial));
+                        new ItemStack(serverSelectorMaterial),
+                        config.getString(path + "ServerSelector.Action"),
+                        config.getString(path + "ServerSelector.Menu"));
 
                 // -------------------------------------------------------------------------------------------------- //
 
@@ -109,14 +115,4 @@ public class HubItemInitializer {
     public static ItemStack getPlayerHiderItem() { return playerHider.getItem(); }
     public static ItemStack getPlayerShowerItem() { return playerShower.getItem(); }
 
-    public static HubItem getServerItemByName(String name) {
-        return hubItemByName.get(name);
-    }
-
-    public static boolean isHubItem(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) {
-            return false;
-        }
-        return hubItemByName.values().stream().anyMatch(hubItem -> hubItem.getItem().isSimilar(item));
-    }
 }
