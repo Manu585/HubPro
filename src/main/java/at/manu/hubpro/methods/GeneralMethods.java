@@ -28,12 +28,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.getConfigByName;
 import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneralMethods {
 
-    // SINGLETON
+    private static final ConnectionHelper CONN_HELPER = new ConnectionHelper();
     private static GeneralMethods instance;
 
     public static synchronized GeneralMethods getInstance() {
@@ -43,65 +44,64 @@ public class GeneralMethods {
         return instance;
     }
 
-    /**
-     * Checks if a clicked ItemStack matches a server item defined in the configuration and performs an action if a match is found.
-     *
-     * @param player      The player performing the action.
-     * @param clickedItem The ItemStack that was clicked on.
-     * @param config      The FileConfiguration from which the server items are read.
-     * @param sectionPath The path within the configuration where the server items are defined.
-     * @return true if an action was performed, otherwise false.
-     * <p>
-     * This method iterates through all entries under the specified configuration path. For each entry, it attempts to match
-     * the item defined in the configuration with the clicked item. If the material matches, it also checks for a match on the display name and lore.
-     * If these match, the defined action is performed (e.g., redirecting the player to another server). This method can be used to implement a clean and reusable logic
-     * for handling custom items in menus or similar GUIs, streamlining the interaction process for players on a Minecraft server.
-     */
     public boolean checkAndPerformServerItemAction(Player player, ItemStack clickedItem, FileConfiguration config, String sectionPath) {
         ConfigurationSection section = config.getConfigurationSection(sectionPath);
-
         if (section == null) return false;
 
         for (String key : section.getKeys(false)) {
+
             ConfigurationSection itemSection = section.getConfigurationSection(key);
             if (itemSection == null) continue;
 
-            String itemName = MessageUtil.format(itemSection.getString("ItemName"));
-            List<String> lore = itemSection.getStringList("ItemLore").stream()
-                    .map(MessageUtil::format)
-                    .collect(Collectors.toList());
+            String itemName   = MessageUtil.format(itemSection.getString("ItemName"));
+            List<String> lore = itemSection.getStringList("ItemLore").stream().map(MessageUtil::format).collect(Collectors.toList());
+            Material material = Material.matchMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
+            String action     = itemSection.getString("Action");
 
-            String materialName = itemSection.getString("ItemStack");
-			assert materialName != null;
-			Material material = Material.matchMaterial(materialName);
-            String action = itemSection.getString("Action");
-            String serverName = itemSection.getString("Server");
-
-			assert action != null;
-			if (action.equalsIgnoreCase("CONNECT")) {
-                if (material != null && clickedItem.getType() == material) {
-                    ItemStack comparisonStack = new ItemStack(material);
-                    ItemMeta meta = comparisonStack.getItemMeta();
-                    if (meta != null) {
-                        meta.setDisplayName(itemName);
-                        meta.setLore(lore);
-                        comparisonStack.setItemMeta(meta);
-                    }
-
-                    if (clickedItem.isSimilar(comparisonStack)) {
-                        if (serverName != null) {
-                            new ConnectionHelper().movePlayerToOtherServer(player, serverName);
-                            player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + key + "!");
-                            player.closeInventory();
-                            return true;
-                        }
-                    }
+            if (matchMaterialAndItem(clickedItem, material, itemName, lore)) {
+				assert action != null;
+				if (action.equalsIgnoreCase("CONNECT")) {
+                    handleConnectAction(player, itemSection.getString("Server"));
+                    return true;
+                } else if (action.equalsIgnoreCase("OPENGUI")) {
+                    handleOpenGUIAction(player, itemSection.getString("GUI"));
+                    return true;
                 }
-            } else {
-                return false;
+
             }
         }
         return false;
+    }
+
+    private void handleConnectAction(Player player, String serverName) {
+        if(serverName != null) {
+            CONN_HELPER.movePlayerToOtherServer(player, serverName);
+            player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + serverName + "!");
+            player.closeInventory();
+        }
+    }
+
+    private void handleOpenGUIAction(Player player, String guiName) {
+        if (guiName != null) {
+            Config gui = getConfigByName(guiName);
+            player.closeInventory();
+            Bukkit.getScheduler().runTask(HubPro.getInstance(), ()-> openGUIFromConfig(gui, player));
+        }
+    }
+
+    private boolean matchMaterialAndItem(ItemStack clickedItem, Material material, String itemName, List<String> lore) {
+        return material != null && clickedItem.getType() == material && isItemSimilar(clickedItem, material, itemName, lore);
+    }
+
+    private boolean isItemSimilar(ItemStack clickedItem, Material material, String itemName, List<String> lore ){
+        ItemStack comparisonStack = new ItemStack(material);
+        ItemMeta meta = comparisonStack.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(itemName);
+            meta.setLore(lore);
+            comparisonStack.setItemMeta(meta);
+        }
+        return clickedItem.isSimilar(comparisonStack);
     }
 
 
@@ -114,7 +114,7 @@ public class GeneralMethods {
         try {
             boolean enabled = ConfigManager.languageConfig.get().getBoolean("HubPro.Title.Enabled");
 
-            String mainTitle = ConfigManager.languageConfig.get().getString("HubPro.Title.MainTitle");
+            String mainTitle= ConfigManager.languageConfig.get().getString("HubPro.Title.MainTitle");
             String subTitle = ConfigManager.languageConfig.get().getString("HubPro.Title.SubTitle");
 
             if (mainTitle == null || mainTitle.isEmpty() || subTitle == null) {
@@ -122,14 +122,12 @@ public class GeneralMethods {
                 return;
             }
 
-            int blendIn = ConfigManager.languageConfig.get().getInt("HubPro.Title.BlendIn", 10);
-            int stay = ConfigManager.languageConfig.get().getInt("HubPro.Title.Stay", 70);
-            int blendOut = ConfigManager.languageConfig.get().getInt("HubPro.Title.BlendOut", 20);
+            int blendIn     = ConfigManager.languageConfig.get().getInt("HubPro.Title.BlendIn", 10);
+            int stay        = ConfigManager.languageConfig.get().getInt("HubPro.Title.Stay", 70);
+            int blendOut    = ConfigManager.languageConfig.get().getInt("HubPro.Title.BlendOut", 20);
 
             if (enabled) {
-                if (subTitle.contains("%player%")) {
-                    subTitle = subTitle.replace("%player%", player.getDisplayName());
-                }
+                if (subTitle.contains("%player%")) { subTitle = subTitle.replace("%player%", player.getDisplayName()); }
                 player.sendTitle(MessageUtil.format(mainTitle), MessageUtil.format(subTitle), blendIn, stay, blendOut);
             }
         } catch (Exception e) {
@@ -239,7 +237,7 @@ public class GeneralMethods {
         }
     }
 
-    public void openGUIFromConfig(Config config, Player player) {
+    public void openGUIFromConfig(@NotNull Config config, Player player) {
         FileConfiguration fileConfig = config.get();
 
         String guiTitle       = fileConfig.getString("Title");

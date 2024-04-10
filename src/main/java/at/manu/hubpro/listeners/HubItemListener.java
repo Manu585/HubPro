@@ -5,7 +5,6 @@
 package at.manu.hubpro.listeners;
 
 import at.manu.hubpro.configuration.Config;
-import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.hubitem.HubItem;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.methods.GeneralMethods;
@@ -21,7 +20,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import static at.manu.hubpro.utils.memoryutil.MemoryUtil.findMenuConfigByTitle;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubItemListener implements Listener {
@@ -72,10 +74,13 @@ public class HubItemListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
         ItemStack clickedItem = event.getCurrentItem();
+        Inventory inventory = event.getClickedInventory();
 
-        if (clickedItem == null || !clickedItem.hasItemMeta()) return;
+        if (clickedItem == null || !clickedItem.hasItemMeta() || inventory == null) return;
 
-        Config menuConfig = ConfigManager.getMenu_serverSelectorConfig();
+        String inventoryTitle = event.getView().getTitle();
+        Config menuConfig = findMenuConfigByTitle(inventoryTitle);
+
         if (menuConfig == null) return;
 
         event.setCancelled(true);
@@ -83,8 +88,7 @@ public class HubItemListener implements Listener {
         boolean actionPerformed = GeneralMethods.getInstance().checkAndPerformServerItemAction(player, clickedItem, menuConfig.get(), "items");
         if (actionPerformed) {
             player.closeInventory();
-        } else {
-            event.setCancelled(true);
         }
     }
+
 }

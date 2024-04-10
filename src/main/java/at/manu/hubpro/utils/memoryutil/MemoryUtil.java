@@ -9,6 +9,7 @@ import at.manu.hubpro.configuration.Config;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.hubitem.HubItem;
 import at.manu.hubpro.methods.GeneralMethods;
+import at.manu.hubpro.utils.chatutil.MessageUtil;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -67,7 +68,22 @@ public class MemoryUtil {
 		}
 		ConfigManager.defaultConfig.reload();
 		ConfigManager.languageConfig.reload();
+		ConfigManager.itemsConfig.reload();
 		ConfigManager.menu_serverSelectorConfig.reload();
 		HubPro.getInstance().getLogger().info("All menu configurations have been reloaded.");
+	}
+
+	public static Config getConfigByName(String name) {
+		return menusConfigs.get(name);
+	}
+
+	public static Config findMenuConfigByTitle(String title) {
+		for (Map.Entry<String, Config> entry : MemoryUtil.menusConfigs.entrySet()) {
+			String configTitle = entry.getValue().get().getString("Title");
+			if (MessageUtil.format(configTitle).equals(MessageUtil.format(title))) {
+				return entry.getValue();
+			}
+		}
+		return null;
 	}
 }

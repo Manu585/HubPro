@@ -28,8 +28,8 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 					return true;
 				}
 				MemoryUtil.reloadAllConfigs();
-				MemoryUtil.reloadMemoryAndPlayerItems();
 				HubItemInitializer.initHubItems();
+				MemoryUtil.reloadMemoryAndPlayerItems();
 				sender.sendMessage(MessageUtil.format("&#38a120Configuration and memory have been reloaded."));
 				return true;
 			}
