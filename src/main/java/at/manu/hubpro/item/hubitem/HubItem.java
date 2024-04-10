@@ -28,17 +28,17 @@ public abstract class HubItem {
     public HubItem(String itemName, List<String> itemLore, ItemStack item, @Nullable String action, @Nullable String menu) {
         this.itemName = itemName;
         this.itemLore = itemLore;
-        this.item = item;
+        this.item     = item;
 
-        this.action = action;
-        this.menu = menu;
+        this.action   = action;
+        this.menu     = menu;
         configureItem();
     }
 
     public HubItem(String itemName, List<String> itemLore, ItemStack item) {
         this.itemName = itemName;
         this.itemLore = itemLore;
-        this.item = item;
+        this.item     = item;
 
         configureItem();
     }

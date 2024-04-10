@@ -114,5 +114,4 @@ public class HubItemInitializer {
     public static ItemStack getServerSelectorItem() { return serverSelector.getItem(); }
     public static ItemStack getPlayerHiderItem() { return playerHider.getItem(); }
     public static ItemStack getPlayerShowerItem() { return playerShower.getItem(); }
-
 }

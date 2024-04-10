@@ -40,8 +40,8 @@ public class ConfigManager {
 
 
 	private void loadCoreConfigs() {
-		itemsConfig = new Config(new File("items.yml"));
-		defaultConfig = new Config(new File("config.yml"));
+		itemsConfig    = new Config(new File("items.yml"));
+		defaultConfig  = new Config(new File("config.yml"));
 		languageConfig = new Config(new File("language.yml"));
 
 		configCheck(ConfigType.DEFAULT);
@@ -88,7 +88,6 @@ public class ConfigManager {
 		FileConfiguration config;
 		if (type == ConfigType.DEFAULT) {
 			config = defaultConfig.get();
-			config.addDefault("HubPro.Permissions.Enabled", false);
 			config.addDefault("HubPro.VoidTP.Enabled", true);
 			config.addDefault("HubPro.VoidTP.VoidY", -65);
 

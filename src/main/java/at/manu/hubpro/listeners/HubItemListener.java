@@ -90,5 +90,4 @@ public class HubItemListener implements Listener {
             player.closeInventory();
         }
     }
-
 }
