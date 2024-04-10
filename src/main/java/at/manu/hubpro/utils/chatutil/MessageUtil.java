@@ -33,11 +33,11 @@ public class MessageUtil {
 
     // --SERVER SIDE MESSAGES--
     public static @NotNull String serverStartMessage() {
-        return format("&2Starting " + getPrefix() + " v1.0.0 !");
+        return format("&2Starting " + getPrefix() + " v0.0.6 !");
     }
 
     public static @NotNull String serverStopMessage() {
-        return format("&2Stopping " + getPrefix() + " v1.0.0 !");
+        return format("&2Stopping " + getPrefix() + " v0.0.6 !");
     }
 
 
