@@ -34,7 +34,6 @@ import static at.manu.hubpro.utils.memoryutil.MemoryUtil.hidePlayers;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneralMethods {
 
-    private static final ConnectionHelper CONN_HELPER = new ConnectionHelper();
     private static GeneralMethods instance;
 
     public static synchronized GeneralMethods getInstance() {
@@ -75,7 +74,7 @@ public class GeneralMethods {
 
     private void handleConnectAction(Player player, String serverName) {
         if(serverName != null) {
-            CONN_HELPER.movePlayerToOtherServer(player, serverName);
+            ConnectionHelper.getInstance().movePlayerToOtherServer(player, serverName);
             player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + serverName + "!");
             player.closeInventory();
         }
