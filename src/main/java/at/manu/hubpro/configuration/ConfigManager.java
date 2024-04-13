@@ -50,7 +50,7 @@ public class ConfigManager {
 	}
 
 
-	private void loadMenusConfigs() {
+	public static void loadMenusConfigs() {
 		menu_dir = new File(HubPro.getInstance().getDataFolder(), "menus");
 
 		if (!menu_dir.exists()) {

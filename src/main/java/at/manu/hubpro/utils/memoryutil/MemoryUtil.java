@@ -70,6 +70,7 @@ public class MemoryUtil {
 		ConfigManager.languageConfig.reload();
 		ConfigManager.itemsConfig.reload();
 		ConfigManager.menu_serverSelectorConfig.reload();
+		ConfigManager.loadMenusConfigs();
 		HubPro.getInstance().getLogger().info("All menu configurations have been reloaded.");
 	}
 
