@@ -12,7 +12,7 @@ Originally developed for the BendersMC server, HubPro has evolved to serve a bro
 
 ## 💼 Organization Chart
 
-### Lead Developer
+### Creator / Lead Developer
 
 - **Manuel** - [Manu585](https://github.com/Manu585)
 
@@ -22,7 +22,7 @@ Originally developed for the BendersMC server, HubPro has evolved to serve a bro
 
 ## 📚 Documentation
 
-STILL IN WORK!
+[Wiki](https://github.com/Manu585/HubPro/wiki)
 
 ## 🤝 Contributing
 

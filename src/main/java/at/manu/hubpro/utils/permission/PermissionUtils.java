@@ -24,41 +24,31 @@ public class PermissionUtils {
         return permissionsMap;
     }
 
-    public static PermissionUtils breakPermission(Player p) {
-        return new PermissionUtils()
-                .add("hubpro.build.break", p.hasPermission("hubpro.build.break"))
-                .add("hubpro.build.*", p.hasPermission("hubpro.build.*"))
-                .add("hubpro.*", p.hasPermission("hubpro.*"));
-    }
-
-    public static PermissionUtils placePermission(Player p) {
-        return new PermissionUtils()
-                .add("hubpro.build.place", p.hasPermission("hubpro.build.place"))
-                .add("hubpro.build.*", p.hasPermission("hubpro.build.*"))
-                .add("hubpro.*", p.hasPermission("hubpro.*"));
-    }
-
     public static PermissionUtils dropPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.drop", p.hasPermission("hubpro.drop"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils pickupPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.pickup", p.hasPermission("hubpro.pickup"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils inventoryClickPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.invclick", p.hasPermission("hubpro.invclick"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils entityHurtPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.damage", p.hasPermission("hubpro.damage"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 }

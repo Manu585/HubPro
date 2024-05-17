@@ -54,7 +54,6 @@ public final class HubPro extends JavaPlugin {
 
         // EVENT REGISTRATION
         registerListener(
-                //HubListeners.getInstance(),
                 HubItemListener.getInstance(),
                 GeneralListeners.getInstance(),
                 GarbageCollectListener.getInstance()

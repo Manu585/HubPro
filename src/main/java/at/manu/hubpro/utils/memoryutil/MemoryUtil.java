@@ -9,6 +9,7 @@ import at.manu.hubpro.configuration.Config;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.hubitem.HubItem;
 import at.manu.hubpro.methods.GeneralMethods;
+import at.manu.hubpro.utils.chatutil.MessageUtil;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -19,6 +20,7 @@ public class MemoryUtil {
 
 	// -- PLAYER RELATED "MEMORY" --
 	public static Set<Player> hidePlayers;
+	public static Set<Player> buildModePlayers;
 	public static Map<UUID, Long> lastToggleTimestamp;
 	public static HashMap<UUID, Long> movement_cooldown;
 
@@ -40,6 +42,7 @@ public class MemoryUtil {
 	private void initiateLists() {
 		lastToggleTimestamp = new HashMap<>();
 		movement_cooldown 	= new HashMap<>();
+		buildModePlayers	= new HashSet<>();
 		permissionsMap 		= new HashMap<>();
 		hubItemByName 		= new HashMap<>();
 		menusConfigs 		= new HashMap<>();
@@ -50,6 +53,7 @@ public class MemoryUtil {
 	public static void reloadMemoryAndPlayerItems() {
 		lastToggleTimestamp	.clear();
 		movement_cooldown	.clear();
+		buildModePlayers	.clear();
 		permissionsMap		.clear();
 		hubItemByName		.clear();
 		hidePlayers			.clear();
@@ -67,6 +71,23 @@ public class MemoryUtil {
 		}
 		ConfigManager.defaultConfig.reload();
 		ConfigManager.languageConfig.reload();
+		ConfigManager.itemsConfig.reload();
+		ConfigManager.menu_serverSelectorConfig.reload();
+		ConfigManager.loadMenusConfigs();
 		HubPro.getInstance().getLogger().info("All menu configurations have been reloaded.");
+	}
+
+	public static Config getConfigByName(String name) {
+		return menusConfigs.get(name);
+	}
+
+	public static Config findMenuConfigByTitle(String title) {
+		for (Map.Entry<String, Config> entry : MemoryUtil.menusConfigs.entrySet()) {
+			String configTitle = entry.getValue().get().getString("Title");
+			if (MessageUtil.format(configTitle).equals(MessageUtil.format(title))) {
+				return entry.getValue();
+			}
+		}
+		return null;
 	}
 }

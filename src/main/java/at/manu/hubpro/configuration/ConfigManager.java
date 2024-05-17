@@ -40,8 +40,8 @@ public class ConfigManager {
 
 
 	private void loadCoreConfigs() {
-		itemsConfig = new Config(new File("items.yml"));
-		defaultConfig = new Config(new File("config.yml"));
+		itemsConfig    = new Config(new File("items.yml"));
+		defaultConfig  = new Config(new File("config.yml"));
 		languageConfig = new Config(new File("language.yml"));
 
 		configCheck(ConfigType.DEFAULT);
@@ -50,7 +50,7 @@ public class ConfigManager {
 	}
 
 
-	private void loadMenusConfigs() {
+	public static void loadMenusConfigs() {
 		menu_dir = new File(HubPro.getInstance().getDataFolder(), "menus");
 
 		if (!menu_dir.exists()) {
@@ -88,10 +88,10 @@ public class ConfigManager {
 		FileConfiguration config;
 		if (type == ConfigType.DEFAULT) {
 			config = defaultConfig.get();
-			config.addDefault("HubPro.Permissions.Enabled", false);
 			config.addDefault("HubPro.VoidTP.Enabled", true);
 			config.addDefault("HubPro.VoidTP.VoidY", -65);
 
+			config.addDefault("HubPro.Items.PlayerHider.Cooldown", 4);
 			config.addDefault("HubPro.Items.PlayerHider.SpamCooldown", 3);
 			config.options().copyDefaults(true);
 			defaultConfig.save();
@@ -154,10 +154,10 @@ public class ConfigManager {
 		} else if (type == ConfigType.MENU) {
 			config = menu_serverSelectorConfig.get();
 			config.addDefault("Title", "&6Server Selector");
-			config.addDefault("Size", 27);
+			config.addDefault("Size", 3);
 			config.addDefault("Fill_rest_with_items", true);
 			config.addDefault("rest_items", "GRAY_STAINED_GLASS_PANE");
-			config.addDefault("items.survival.action", "CONNECT");
+			config.addDefault("items.survival.Action", "CONNECT");
 			config.addDefault("items.survival.Server", "survival");
 			config.addDefault("items.survival.ItemName", "&6Survival");
 			List<String> survivalLore = new ArrayList<>();
@@ -166,49 +166,6 @@ public class ConfigManager {
 			config.addDefault("items.survival.ItemStack", "STONE");
 			config.addDefault("items.survival.MenuPlace", 14);
 			menu_serverSelectorConfig.save();
-		}
-	}
-
-	private static void ensureServerItemsConfig(FileConfiguration config) {
-		String basePath = "HubPro.ServerItems";
-		if (!config.isConfigurationSection(basePath)) {
-			config.addDefault("Server", "Lobby Selector");
-			config.addDefault("ItemName", "&#314894Lobby");
-			List<String> lobbySelectorLore = new ArrayList<>();
-			lobbySelectorLore.add("&7Server Info");
-			config.addDefault("Lore", lobbySelectorLore);
-			config.addDefault("ItemStack", "GRASS_BLOCK");
-			config.addDefault("menuplace", 12);
-			config.addDefault("Action", "OPEN_MENU");
-			config.addDefault("Menu", "Lobbies");
-
-			config.addDefault("Server", "Lobby"); // Server to connect
-			config.addDefault("ItemName", "&#314894Lobby");
-			List<String> lobbyLore = new ArrayList<>();
-			lobbyLore.add("&7Server Info");
-			lobbyLore.add("");
-			lobbyLore.add("&fExplore the world, play with your friends,");
-			lobbyLore.add("&fand bend the elements on &#314894Lobby&f!");
-			lobbyLore.add("");
-			lobbyLore.add("&7[ &#6cab2cClick to join! &7]");
-			config.addDefault("Lore", lobbyLore);
-			config.addDefault("ItemStack", "GRASS_BLOCK");
-			config.addDefault("menuplace", 12);
-			config.addDefault("Action", "CONNECT");
-
-			config.addDefault("Server", "survivalServerName");
-			config.addDefault("ItemName", "&#70cf89Survival");
-			List<String> survivalLore = new ArrayList<>();
-			survivalLore.add("&7Server Info");
-			survivalLore.add("");
-			survivalLore.add("&fExplore the world, play with your friends,");
-			survivalLore.add("&fand bend the elements on &#70cf89Survival&f!");
-			survivalLore.add("");
-			survivalLore.add("&7[ &#6cab2cClick to join! &7]");
-			config.addDefault("Lore", survivalLore);
-			config.addDefault("ItemStack", "DIRT");
-			config.addDefault("menuplace", 14);
-			config.addDefault("Action", "CONNECT");
 		}
 	}
 }

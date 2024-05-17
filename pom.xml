@@ -7,13 +7,13 @@
   <groupId>at.manu</groupId>
   <artifactId>HubPro</artifactId>
   <name>HubPro</name>
-  <version>1.0.0</version>
+  <version>0.0.7</version>
   <packaging>jar</packaging>
 
   <properties>
       <author>Manu</author>
       <main.class>at.manu.hubpro.HubPro</main.class>
-      <java.version>1.8</java.version>
+      <java.version>8</java.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -44,7 +44,7 @@
       <dependency>
           <groupId>org.jetbrains</groupId>
           <artifactId>annotations</artifactId>
-          <version>RELEASE</version>
+          <version>24.1.0</version>
           <scope>compile</scope>
       </dependency>
       <dependency>
