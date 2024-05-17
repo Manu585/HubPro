@@ -27,24 +27,28 @@ public class PermissionUtils {
     public static PermissionUtils dropPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.drop", p.hasPermission("hubpro.drop"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils pickupPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.pickup", p.hasPermission("hubpro.pickup"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils inventoryClickPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.invclick", p.hasPermission("hubpro.invclick"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 
     public static PermissionUtils entityHurtPermission(Player p) {
         return new PermissionUtils()
                 .add("hubpro.damage", p.hasPermission("hubpro.damage"))
+                .add("hubpro.buildmode",p.hasPermission("hubpro.buildmode"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
 }

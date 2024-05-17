@@ -20,6 +20,7 @@ public class MemoryUtil {
 
 	// -- PLAYER RELATED "MEMORY" --
 	public static Set<Player> hidePlayers;
+	public static Set<Player> buildModePlayers;
 	public static Map<UUID, Long> lastToggleTimestamp;
 	public static HashMap<UUID, Long> movement_cooldown;
 
@@ -41,6 +42,7 @@ public class MemoryUtil {
 	private void initiateLists() {
 		lastToggleTimestamp = new HashMap<>();
 		movement_cooldown 	= new HashMap<>();
+		buildModePlayers	= new HashSet<>();
 		permissionsMap 		= new HashMap<>();
 		hubItemByName 		= new HashMap<>();
 		menusConfigs 		= new HashMap<>();
@@ -51,6 +53,7 @@ public class MemoryUtil {
 	public static void reloadMemoryAndPlayerItems() {
 		lastToggleTimestamp	.clear();
 		movement_cooldown	.clear();
+		buildModePlayers	.clear();
 		permissionsMap		.clear();
 		hubItemByName		.clear();
 		hidePlayers			.clear();
