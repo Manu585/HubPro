@@ -6,6 +6,7 @@ package at.manu.hubpro.commands;
 
 import at.manu.hubpro.item.initializer.HubItemInitializer;
 import at.manu.hubpro.manager.BuildMode;
+import at.manu.hubpro.methods.GeneralMethods;
 import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.memoryutil.MemoryUtil;
 import org.bukkit.command.Command;
@@ -24,6 +25,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 		if (args.length > 0) {
+			Player p = (Player) sender;
 			if ("reloadconfig".equalsIgnoreCase(args[0])) {
 				if (!sender.hasPermission("hubpro.command.reload")) {
 					sender.sendMessage("You do not have permission to execute this command.");
@@ -39,13 +41,19 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage("You do not have permission to execute this command.");
 					return true;
 				}
-				Player p = (Player) sender;
 				if (BuildMode.isInBuildMode(p)) {
 					BuildMode.leaveBuildMode(p);
 				} else {
 					BuildMode.enterBuildMode(p);
 				}
 				return true;
+			} else if ("setspawn".equalsIgnoreCase(args[0])) {
+				if (!sender.hasPermission("hubpro.setspawn")) {
+					sender.sendMessage("You do not have permission to execute this command.");
+					return true;
+				}
+				GeneralMethods.getInstance().setPlayerSpawn(p);
+				sender.sendMessage(MessageUtil.getPrefix() + MessageUtil.format("&6Successfully set new hub spawn point!"));
 			}
 		}
 		return false;
@@ -58,6 +66,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 			List<String> subCommands = new ArrayList<>();
 			subCommands.add("reloadconfig");
 			subCommands.add("buildmode");
+			subCommands.add("setspawn");
 			String arg = args[0].toLowerCase();
 			for (String subCommand : subCommands) {
 				if (subCommand.toLowerCase().startsWith(arg)) {

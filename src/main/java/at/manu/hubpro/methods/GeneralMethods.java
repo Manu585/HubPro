@@ -272,4 +272,30 @@ public class GeneralMethods {
         GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial);
         player.openInventory(gui.getInventory());
     }
+
+    public void setPlayerSpawn(Player player) {
+        Config config = ConfigManager.getDefaultConfig();
+        config.get().addDefault("HubPro.Spawn.World" ,player.getWorld().getName());
+        config.get().addDefault("HubPro.Spawn.X"     ,player.getLocation().getX());
+        config.get().addDefault("HubPro.Spawn.Y"     ,player.getLocation().getY());
+        config.get().addDefault("HubPro.Spawn.Z"     ,player.getLocation().getZ());
+        config.get().addDefault("HubPro.Spawn.Yaw"   ,player.getLocation().getYaw());
+        config.get().addDefault("HubPro.Spawn.Pitch" ,player.getLocation().getPitch());
+
+        config.save();
+    }
+
+    public Location getSpawnLocation() {
+        Config config = ConfigManager.getDefaultConfig();
+
+        String world  = config.get().getString("HubPro.Spawn.World");
+        double x      = config.get().getDouble("HubPro.Spawn.X");
+        double y      = config.get().getDouble("HubPro.Spawn.Y");
+        double z      = config.get().getDouble("HubPro.Spawn.Z");
+        float yaw     = (float) config.get().getDouble("HubPro.Spawn.Yaw");
+        float pitch   = (float) config.get().getDouble("HubPro.Spawn.Pitch");
+
+		assert world != null;
+		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+    }
 }

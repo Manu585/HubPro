@@ -28,7 +28,7 @@ public class MessageUtil {
     }
 
     public static String getPrefix() {
-        return ConfigManager.languageConfig.get().getString(MessageUtil.format("HubPro.Chat.Prefix"));
+        return MessageUtil.format(ConfigManager.languageConfig.get().getString("HubPro.Chat.Prefix") + " ");
     }
 
     // --SERVER SIDE MESSAGES--

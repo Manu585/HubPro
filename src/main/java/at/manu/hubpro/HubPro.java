@@ -30,8 +30,6 @@ public final class HubPro extends JavaPlugin {
     public void onEnable() {
         instance = this;
         initializer();
-
-        getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
     }
 
     @Override
@@ -61,6 +59,8 @@ public final class HubPro extends JavaPlugin {
         // COMMAND REGISTRATION
         Objects.requireNonNull(getCommand("hubpro")).setExecutor(new HubProCommand());
         Objects.requireNonNull(getCommand("hubpro")).setTabCompleter(new HubProCommand());
+
+        getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
     }
 
     private void registerListener(Listener... listeners) {

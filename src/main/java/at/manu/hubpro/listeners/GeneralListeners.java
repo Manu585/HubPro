@@ -24,6 +24,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -53,6 +54,13 @@ public class GeneralListeners implements Listener {
 
 		GeneralMethods.getInstance().sendTitle(p);
 		GeneralMethods.getInstance().insertHubItems(p);
+
+		if (GeneralMethods.getInstance().getSpawnLocation() != null) {
+			p.teleport(GeneralMethods.getInstance().getSpawnLocation());
+		} else {
+
+			p.teleport(p.getWorld().getSpawnLocation());
+		}
 	}
 
 	@EventHandler
