@@ -58,7 +58,7 @@ public class GeneralMethods {
             Material material = Material.matchMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
             String action     = itemSection.getString("Action");
 
-            if (matchMaterialAndItem(clickedItem, material, itemName, lore)) {
+            if (matchMaterialAndItem(player, clickedItem, material, itemName, lore)) {
 				assert action != null;
 				if (action.equalsIgnoreCase("CONNECT")) {
                     handleConnectAction(player, itemSection.getString("Server"));
@@ -89,21 +89,20 @@ public class GeneralMethods {
         }
     }
 
-    private boolean matchMaterialAndItem(ItemStack clickedItem, Material material, String itemName, List<String> lore) {
-        return material != null && clickedItem.getType() == material && isItemSimilar(clickedItem, material, itemName, lore);
+    private boolean matchMaterialAndItem(Player p, ItemStack clickedItem, Material material, String itemName, List<String> lore) {
+        return material != null && clickedItem.getType() == material && isItemSimilar(p, clickedItem, material, itemName, lore);
     }
 
-    private boolean isItemSimilar(ItemStack clickedItem, Material material, String itemName, List<String> lore ){
+    private boolean isItemSimilar(Player p, ItemStack clickedItem, Material material, String itemName, List<String> lore ){
         ItemStack comparisonStack = new ItemStack(material);
         ItemMeta meta = comparisonStack.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(itemName);
-            meta.setLore(lore);
+            meta.setDisplayName(PlaceholderAPI.setPlaceholders(p, itemName));
+            meta.setLore       (PlaceholderAPI.setPlaceholders(p, lore));
             comparisonStack.setItemMeta(meta);
         }
         return clickedItem.isSimilar(comparisonStack);
     }
-
 
     /**
      * Sends a Bukkit title with values out of a config to the player
@@ -134,7 +133,6 @@ public class GeneralMethods {
             HubPro.getInstance().getLogger().severe("An error occurred while sending title: " + e.getMessage());
         }
     }
-
 
     /**
      * Hides other players from the player.
@@ -184,7 +182,6 @@ public class GeneralMethods {
         HubPro.getCooldownManager().setCooldown(player, cooldownKey, ConfigManager.defaultConfig.get().getInt("HubPro.Items.PlayerHider.Cooldown"));
     }
 
-
     /**
      * Gives the player the starter items upon joining the server.
      *
@@ -202,7 +199,6 @@ public class GeneralMethods {
             HubPro.getInstance().getLogger().severe("An error occurred while giving player starter items");
         }
     }
-
 
     /**
      * Plays an animation to the client and also teleporting the player
@@ -264,9 +260,8 @@ public class GeneralMethods {
                         ItemStack item = new ItemStack(material);
                         ItemMeta meta = item.getItemMeta();
                         if (meta != null) {
-                            String convertedName = MessageUtil.format(itemName);
-                            meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, convertedName));
-                            meta.setLore(PlaceholderAPI.setPlaceholders(player, lore));
+                            meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, MessageUtil.format(itemName)));
+                            meta.setLore       (PlaceholderAPI.setPlaceholders(player, lore));
                             item.setItemMeta(meta);
                         }
                         items.put(itemPlace, item);

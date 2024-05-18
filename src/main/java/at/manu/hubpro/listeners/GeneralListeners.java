@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -113,5 +115,23 @@ public class GeneralListeners implements Listener {
     			e.setCancelled(true);
     		}
     	}
+	}
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		Player p = e.getPlayer();
+		PermissionUtils permissionUtils = PermissionUtils.blockPlacePermission(p);
+		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		Player p = e.getPlayer();
+		PermissionUtils permissionUtils = PermissionUtils.blockBreakPermission(p);
+		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
+			e.setCancelled(true);
+		}
 	}
 }

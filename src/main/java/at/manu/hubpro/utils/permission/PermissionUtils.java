@@ -47,4 +47,16 @@ public class PermissionUtils {
                 .add("hubpro.damage", p.hasPermission("hubpro.damage"))
                 .add("hubpro.*", p.hasPermission("hubpro.*"));
     }
+
+    public static PermissionUtils blockPlacePermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.blockplace", p.hasPermission("hubpro.blockplace"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
+
+    public static PermissionUtils blockBreakPermission(Player p) {
+        return new PermissionUtils()
+                .add("hubpro.blockbreak", p.hasPermission("hubpro.blockbreak"))
+                .add("hubpro.*", p.hasPermission("hubpro.*"));
+    }
 }
