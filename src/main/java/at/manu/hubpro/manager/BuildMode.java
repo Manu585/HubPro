@@ -12,7 +12,7 @@ public class BuildMode {
 		if (!isInBuildMode(p)) {
 			p.getInventory().clear();
 			p.setGameMode(GameMode.CREATIVE);
-			p.sendTitle(MessageUtil.format("&6Build Mode"), MessageUtil.format("&bActivated"), 10, 60, 10);
+			p.sendTitle(MessageUtil.format("&6Build Mode"), MessageUtil.format("&bActivated"), 5, 40, 5);
 			buildModePlayers.add(p);
 		}
 	}
@@ -21,7 +21,7 @@ public class BuildMode {
 		if (isInBuildMode(p)) {
 			p.getInventory().clear();
 			p.setGameMode(GameMode.SURVIVAL);
-			p.sendTitle(MessageUtil.format("&6Build Mode"), MessageUtil.format("&cDeactivated"), 10, 60, 10);
+			p.sendTitle(MessageUtil.format("&6Build Mode"), MessageUtil.format("&cDeactivated"), 5, 40, 5);
 			GeneralMethods.getInstance().insertHubItems(p);
 			buildModePlayers.remove(p);
 		}

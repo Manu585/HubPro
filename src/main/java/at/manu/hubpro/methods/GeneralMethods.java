@@ -13,6 +13,7 @@ import at.manu.hubpro.utils.gui.GuiHelper;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -263,8 +264,9 @@ public class GeneralMethods {
                         ItemStack item = new ItemStack(material);
                         ItemMeta meta = item.getItemMeta();
                         if (meta != null) {
-                            meta.setDisplayName(MessageUtil.format(itemName));
-                            meta.setLore(lore);
+                            String convertedName = MessageUtil.format(itemName);
+                            meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, convertedName));
+                            meta.setLore(PlaceholderAPI.setPlaceholders(player, lore));
                             item.setItemMeta(meta);
                         }
                         items.put(itemPlace, item);

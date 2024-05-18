@@ -51,7 +51,7 @@ public class MessageUtil {
             }
         }
 
-        if (missingPermissions.length() > 0) {
+        if (!missingPermissions.isEmpty()) {
             missingPermissions.setLength(missingPermissions.length() - 4);
         }
 

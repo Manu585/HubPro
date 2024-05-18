@@ -39,7 +39,6 @@ public final class HubPro extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStopMessage());
     }
 
-
     private void initializer() {
         new MemoryUtil();
         new ConfigManager();

@@ -58,7 +58,12 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 			List<String> subCommands = new ArrayList<>();
 			subCommands.add("reloadconfig");
 			subCommands.add("buildmode");
-			return subCommands;
+			String arg = args[0].toLowerCase();
+			for (String subCommand : subCommands) {
+				if (subCommand.toLowerCase().startsWith(arg)) {
+					return subCommands;
+				}
+			}
 		}
 		return null;
 	}

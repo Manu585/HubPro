@@ -36,9 +36,8 @@ public class HubItemListener implements Listener {
     @EventHandler
     public void onArrowLand(ProjectileHitEvent e) {
         if (e.getEntity().getType() == EntityType.ARROW) {
-            if (e.getEntity().getShooter() instanceof Player) {
-                Player p = (Player) e.getEntity().getShooter();
-                ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
+            if (e.getEntity().getShooter() instanceof Player p) {
+				ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
                 if (itemInMainHand.isSimilar(HubItemInitializer.getTpBowItem())) {
                     GeneralMethods.getInstance().TpBowArrowLandAnimation(p, e.getEntity());  // PLAYS ANIMATION AND REMOVES ARROW
                 }
@@ -70,10 +69,9 @@ public class HubItemListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        Player player = (Player) event.getWhoClicked();
-        ItemStack clickedItem = event.getCurrentItem();
+		ItemStack clickedItem = event.getCurrentItem();
         Inventory inventory = event.getClickedInventory();
 
         if (clickedItem == null || !clickedItem.hasItemMeta() || inventory == null) return;
