@@ -25,7 +25,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 		if (args.length > 0) {
-			Player p = (Player) sender;
+			Player p;
 			if ("reloadconfig".equalsIgnoreCase(args[0])) {
 				if (!sender.hasPermission("hubpro.command.reload")) {
 					sender.sendMessage("You do not have permission to execute this command.");
@@ -41,6 +41,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage("You do not have permission to execute this command.");
 					return true;
 				}
+				p = (Player) sender;
 				if (BuildMode.isInBuildMode(p)) {
 					BuildMode.leaveBuildMode(p);
 				} else {
@@ -52,6 +53,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage("You do not have permission to execute this command.");
 					return true;
 				}
+				p = (Player) sender;
 				GeneralMethods.getInstance().setPlayerSpawn(p);
 				sender.sendMessage(MessageUtil.getPrefix() + MessageUtil.format("&6Successfully set new hub spawn point!"));
 			}
@@ -64,12 +66,15 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 		if (args.length == 1) {
 			List<String> subCommands = new ArrayList<>();
-			subCommands.add("reloadconfig");
 			subCommands.add("buildmode");
+			subCommands.add("reloadconfig");
 			subCommands.add("setspawn");
 			String arg = args[0].toLowerCase();
 			for (String subCommand : subCommands) {
 				if (subCommand.toLowerCase().startsWith(arg)) {
+					if (subCommand.toLowerCase().equalsIgnoreCase(arg)) {
+						return List.of(args);
+					}
 					return subCommands;
 				}
 			}

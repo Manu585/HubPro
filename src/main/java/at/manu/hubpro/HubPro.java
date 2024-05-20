@@ -57,8 +57,8 @@ public final class HubPro extends JavaPlugin {
         );
 
         // COMMAND REGISTRATION
-        Objects.requireNonNull(getCommand("hubpro")).setExecutor(new HubProCommand());
-        Objects.requireNonNull(getCommand("hubpro")).setTabCompleter(new HubProCommand());
+        getCommand("hubpro").setExecutor(new HubProCommand());
+        getCommand("hubpro").setTabCompleter(new HubProCommand());
 
         getServer().getConsoleSender().sendMessage(MessageUtil.serverStartMessage());
     }

@@ -67,6 +67,7 @@ public class HubItemListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;

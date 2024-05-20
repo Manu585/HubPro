@@ -157,6 +157,7 @@ public class ConfigManager {
 			config.addDefault("Size", 3);
 			config.addDefault("Fill_rest_with_items", true);
 			config.addDefault("rest_items", "GRAY_STAINED_GLASS_PANE");
+			config.addDefault("rest_item_name", "fill");
 			config.addDefault("items.survival.Action", "CONNECT");
 			config.addDefault("items.survival.Server", "survival");
 			config.addDefault("items.survival.ItemName", "&6Survival");

@@ -141,8 +141,8 @@ public class GeneralMethods {
      * @param hide   If the other players should be hidden or seen
      */
     public void togglePlayerVisibility(Player player, boolean hide) {
-        String cooldownKey = hide ? "hide_players" : "show_players";
-        String notificationCooldownKey = cooldownKey + "_notification";
+        String cooldownKey = "toggle_visibility";
+        String notificationCooldownKey = "toggle_visibility_notification";
         String messageKey = hide ? "HubPro.Items.PlayerHider.HideMessage" : "HubPro.Items.PlayerShower.ShowMessage";
         ItemStack newItem = hide ? HubItemInitializer.getPlayerShowerItem() : HubItemInitializer.getPlayerHiderItem();
 
@@ -236,10 +236,11 @@ public class GeneralMethods {
     public void openGUIFromConfig(@NotNull Config config, Player player) {
         FileConfiguration fileConfig = config.get();
 
-        String guiTitle       = fileConfig.getString("Title");
-        int guiSize           = fileConfig.getInt("Size");
-        boolean guiFill       = fileConfig.getBoolean("Fill_rest_with_items");
-        Material fillMaterial = Material.matchMaterial(fileConfig.getString("rest_items", "GRAY_STAINED_GLASS_PANE"));
+        String guiTitle         = fileConfig.getString("Title");
+        int guiSize             = fileConfig.getInt("Size");
+        boolean guiFill         = fileConfig.getBoolean("Fill_rest_with_items");
+        Material fillMaterial   = Material.matchMaterial(fileConfig.getString("rest_items", "GRAY_STAINED_GLASS_PANE"));
+        String fillMaterialName = fileConfig.getString("rest_item_name");
 
         Map<Integer, ItemStack> items = new HashMap<>();
         ConfigurationSection itemsSection = fileConfig.getConfigurationSection("items");
@@ -269,7 +270,7 @@ public class GeneralMethods {
                 }
             }
         }
-        GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial);
+        GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial, fillMaterialName);
         player.openInventory(gui.getInventory());
     }
 
@@ -295,7 +296,9 @@ public class GeneralMethods {
         float yaw     = (float) config.get().getDouble("HubPro.Spawn.Yaw");
         float pitch   = (float) config.get().getDouble("HubPro.Spawn.Pitch");
 
-		assert world != null;
+		if (world == null) {
+            return null;
+        }
 		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 }
