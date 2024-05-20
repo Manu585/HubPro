@@ -4,6 +4,7 @@
 
 package at.manu.hubpro.utils.chatutil;
 
+import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -33,11 +34,11 @@ public class MessageUtil {
 
     // --SERVER SIDE MESSAGES--
     public static @NotNull String serverStartMessage() {
-        return format("&2Starting " + getPrefix() + " v0.0.7!");
+        return format("&2Starting " + getPrefix() + " v0.0.8!");
     }
 
     public static @NotNull String serverStopMessage() {
-        return format("&2Stopping " + getPrefix() + " v0.0.7!");
+        return format("&2Stopping " + getPrefix() + " v0.0.8!");
     }
 
 

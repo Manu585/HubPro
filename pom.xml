@@ -7,7 +7,7 @@
   <groupId>at.manu</groupId>
   <artifactId>HubPro</artifactId>
   <name>HubPro</name>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
   <packaging>jar</packaging>
 
   <properties>
