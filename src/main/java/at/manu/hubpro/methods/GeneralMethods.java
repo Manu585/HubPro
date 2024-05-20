@@ -13,6 +13,7 @@ import at.manu.hubpro.utils.gui.GuiHelper;
 import at.manu.hubpro.utils.proxyconnection.ConnectionHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -57,7 +58,7 @@ public class GeneralMethods {
             Material material = Material.matchMaterial(Objects.requireNonNull(itemSection.getString("ItemStack")));
             String action     = itemSection.getString("Action");
 
-            if (matchMaterialAndItem(clickedItem, material, itemName, lore)) {
+            if (matchMaterialAndItem(player, clickedItem, material, itemName, lore)) {
 				assert action != null;
 				if (action.equalsIgnoreCase("CONNECT")) {
                     handleConnectAction(player, itemSection.getString("Server"));
@@ -88,21 +89,20 @@ public class GeneralMethods {
         }
     }
 
-    private boolean matchMaterialAndItem(ItemStack clickedItem, Material material, String itemName, List<String> lore) {
-        return material != null && clickedItem.getType() == material && isItemSimilar(clickedItem, material, itemName, lore);
+    private boolean matchMaterialAndItem(Player p, ItemStack clickedItem, Material material, String itemName, List<String> lore) {
+        return material != null && clickedItem.getType() == material && isItemSimilar(p, clickedItem, material, itemName, lore);
     }
 
-    private boolean isItemSimilar(ItemStack clickedItem, Material material, String itemName, List<String> lore ){
+    private boolean isItemSimilar(Player p, ItemStack clickedItem, Material material, String itemName, List<String> lore ){
         ItemStack comparisonStack = new ItemStack(material);
         ItemMeta meta = comparisonStack.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(itemName);
-            meta.setLore(lore);
+            meta.setDisplayName(PlaceholderAPI.setPlaceholders(p, itemName));
+            meta.setLore       (PlaceholderAPI.setPlaceholders(p, lore));
             comparisonStack.setItemMeta(meta);
         }
         return clickedItem.isSimilar(comparisonStack);
     }
-
 
     /**
      * Sends a Bukkit title with values out of a config to the player
@@ -134,7 +134,6 @@ public class GeneralMethods {
         }
     }
 
-
     /**
      * Hides other players from the player.
      *
@@ -142,8 +141,8 @@ public class GeneralMethods {
      * @param hide   If the other players should be hidden or seen
      */
     public void togglePlayerVisibility(Player player, boolean hide) {
-        String cooldownKey = hide ? "hide_players" : "show_players";
-        String notificationCooldownKey = cooldownKey + "_notification";
+        String cooldownKey = "toggle_visibility";
+        String notificationCooldownKey = "toggle_visibility_notification";
         String messageKey = hide ? "HubPro.Items.PlayerHider.HideMessage" : "HubPro.Items.PlayerShower.ShowMessage";
         ItemStack newItem = hide ? HubItemInitializer.getPlayerShowerItem() : HubItemInitializer.getPlayerHiderItem();
 
@@ -183,7 +182,6 @@ public class GeneralMethods {
         HubPro.getCooldownManager().setCooldown(player, cooldownKey, ConfigManager.defaultConfig.get().getInt("HubPro.Items.PlayerHider.Cooldown"));
     }
 
-
     /**
      * Gives the player the starter items upon joining the server.
      *
@@ -201,7 +199,6 @@ public class GeneralMethods {
             HubPro.getInstance().getLogger().severe("An error occurred while giving player starter items");
         }
     }
-
 
     /**
      * Plays an animation to the client and also teleporting the player
@@ -239,10 +236,11 @@ public class GeneralMethods {
     public void openGUIFromConfig(@NotNull Config config, Player player) {
         FileConfiguration fileConfig = config.get();
 
-        String guiTitle       = fileConfig.getString("Title");
-        int guiSize           = fileConfig.getInt("Size");
-        boolean guiFill       = fileConfig.getBoolean("Fill_rest_with_items");
-        Material fillMaterial = Material.matchMaterial(fileConfig.getString("rest_items", "GRAY_STAINED_GLASS_PANE"));
+        String guiTitle         = fileConfig.getString("Title");
+        int guiSize             = fileConfig.getInt("Size");
+        boolean guiFill         = fileConfig.getBoolean("Fill_rest_with_items");
+        Material fillMaterial   = Material.matchMaterial(fileConfig.getString("rest_items", "GRAY_STAINED_GLASS_PANE"));
+        String fillMaterialName = fileConfig.getString("rest_item_name");
 
         Map<Integer, ItemStack> items = new HashMap<>();
         ConfigurationSection itemsSection = fileConfig.getConfigurationSection("items");
@@ -263,8 +261,8 @@ public class GeneralMethods {
                         ItemStack item = new ItemStack(material);
                         ItemMeta meta = item.getItemMeta();
                         if (meta != null) {
-                            meta.setDisplayName(MessageUtil.format(itemName));
-                            meta.setLore(lore);
+                            meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, MessageUtil.format(itemName)));
+                            meta.setLore       (PlaceholderAPI.setPlaceholders(player, lore));
                             item.setItemMeta(meta);
                         }
                         items.put(itemPlace, item);
@@ -272,7 +270,35 @@ public class GeneralMethods {
                 }
             }
         }
-        GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial);
+        GuiHelper gui = new GuiHelper(guiSize, MessageUtil.format(guiTitle), items, guiFill, fillMaterial, fillMaterialName);
         player.openInventory(gui.getInventory());
+    }
+
+    public void setPlayerSpawn(Player player) {
+        Config config = ConfigManager.getDefaultConfig();
+        config.get().addDefault("HubPro.Spawn.World" ,player.getWorld().getName());
+        config.get().addDefault("HubPro.Spawn.X"     ,player.getLocation().getX());
+        config.get().addDefault("HubPro.Spawn.Y"     ,player.getLocation().getY());
+        config.get().addDefault("HubPro.Spawn.Z"     ,player.getLocation().getZ());
+        config.get().addDefault("HubPro.Spawn.Yaw"   ,player.getLocation().getYaw());
+        config.get().addDefault("HubPro.Spawn.Pitch" ,player.getLocation().getPitch());
+
+        config.save();
+    }
+
+    public Location getSpawnLocation() {
+        Config config = ConfigManager.getDefaultConfig();
+
+        String world  = config.get().getString("HubPro.Spawn.World");
+        double x      = config.get().getDouble("HubPro.Spawn.X");
+        double y      = config.get().getDouble("HubPro.Spawn.Y");
+        double z      = config.get().getDouble("HubPro.Spawn.Z");
+        float yaw     = (float) config.get().getDouble("HubPro.Spawn.Yaw");
+        float pitch   = (float) config.get().getDouble("HubPro.Spawn.Pitch");
+
+		if (world == null) {
+            return null;
+        }
+		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 }

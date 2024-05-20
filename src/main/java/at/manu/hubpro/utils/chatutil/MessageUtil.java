@@ -4,6 +4,7 @@
 
 package at.manu.hubpro.utils.chatutil;
 
+import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -28,16 +29,16 @@ public class MessageUtil {
     }
 
     public static String getPrefix() {
-        return ConfigManager.languageConfig.get().getString(MessageUtil.format("HubPro.Chat.Prefix"));
+        return MessageUtil.format(ConfigManager.languageConfig.get().getString("HubPro.Chat.Prefix") + " ");
     }
 
     // --SERVER SIDE MESSAGES--
     public static @NotNull String serverStartMessage() {
-        return format("&2Starting " + getPrefix() + " v0.0.7!");
+        return format("&2Starting " + getPrefix() + " v0.0.8!");
     }
 
     public static @NotNull String serverStopMessage() {
-        return format("&2Stopping " + getPrefix() + " v0.0.7!");
+        return format("&2Stopping " + getPrefix() + " v0.0.8!");
     }
 
 
@@ -51,7 +52,7 @@ public class MessageUtil {
             }
         }
 
-        if (missingPermissions.length() > 0) {
+        if (!missingPermissions.isEmpty()) {
             missingPermissions.setLength(missingPermissions.length() - 4);
         }
 

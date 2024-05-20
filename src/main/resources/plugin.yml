@@ -5,6 +5,8 @@ author: ${author}
 
 api-version: '1.20'
 
+softdepend: [PlaceholderAPI]
+
 commands:
   hubpro:
     description: HubPro main command

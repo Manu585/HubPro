@@ -7,8 +7,8 @@ package at.manu.hubpro.listeners;
 import at.manu.hubpro.HubPro;
 import at.manu.hubpro.configuration.ConfigManager;
 import at.manu.hubpro.item.initializer.HubItemInitializer;
+import at.manu.hubpro.manager.BuildMode;
 import at.manu.hubpro.methods.GeneralMethods;
-import at.manu.hubpro.utils.chatutil.MessageUtil;
 import at.manu.hubpro.utils.permission.PermissionUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,12 +16,15 @@ import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -51,6 +54,13 @@ public class GeneralListeners implements Listener {
 
 		GeneralMethods.getInstance().sendTitle(p);
 		GeneralMethods.getInstance().insertHubItems(p);
+
+		if (GeneralMethods.getInstance().getSpawnLocation() != null) {
+			p.teleport(GeneralMethods.getInstance().getSpawnLocation());
+		} else {
+
+			p.teleport(p.getWorld().getSpawnLocation());
+		}
 	}
 
 	@EventHandler
@@ -80,19 +90,16 @@ public class GeneralListeners implements Listener {
 	public void onItemDrop(PlayerDropItemEvent e) {
 		Player p = e.getPlayer();
 		PermissionUtils permissionUtils = PermissionUtils.dropPermission(p);
-		if (permissionUtils.check()) {
-			p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
+		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onPickupItem(EntityPickupItemEvent e) {
-		if (e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+		if (e.getEntity() instanceof Player p) {
 			PermissionUtils permissionUtils = PermissionUtils.pickupPermission(p);
-			if (permissionUtils.check()) {
-				p.sendMessage(MessageUtil.noPermissionMessage(permissionUtils));
+			if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
 				e.setCancelled(true);
 			}
 		}
@@ -100,10 +107,9 @@ public class GeneralListeners implements Listener {
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent e) {
-		if (e.getWhoClicked() instanceof Player) {
-			Player p = (Player) e.getWhoClicked();
+		if (e.getWhoClicked() instanceof Player p) {
 			PermissionUtils permissionUtils = PermissionUtils.inventoryClickPermission(p);
-			if (permissionUtils.check()) {
+			if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
 				e.setCancelled(true);
 			}
 		}
@@ -111,12 +117,29 @@ public class GeneralListeners implements Listener {
 
 	@EventHandler
 	public void onEntityHurt(EntityDamageByEntityEvent e) {
-		if (e.getEntity() instanceof Player) {
-    		Player p = (Player) e.getEntity();
-    		PermissionUtils permissionUtils = PermissionUtils.entityHurtPermission(p);
-    		if (permissionUtils.check()) {
+		if (e.getEntity() instanceof Player p) {
+			PermissionUtils permissionUtils = PermissionUtils.entityHurtPermission(p);
+    		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
     			e.setCancelled(true);
     		}
     	}
+	}
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		Player p = e.getPlayer();
+		PermissionUtils permissionUtils = PermissionUtils.blockPlacePermission(p);
+		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		Player p = e.getPlayer();
+		PermissionUtils permissionUtils = PermissionUtils.blockBreakPermission(p);
+		if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
+			e.setCancelled(true);
+		}
 	}
 }
