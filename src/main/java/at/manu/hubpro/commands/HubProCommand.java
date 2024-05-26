@@ -34,7 +34,7 @@ public class HubProCommand implements CommandExecutor, TabCompleter {
 				MemoryUtil.reloadAllConfigs();
 				HubItemInitializer.initHubItems();
 				MemoryUtil.reloadMemoryAndPlayerItems();
-				sender.sendMessage(MessageUtil.format("&#38a120Configuration and memory have been reloaded."));
+				sender.sendMessage(MessageUtil.format(MessageUtil.getPrefix() + "&#38a120Configuration and memory have been reloaded."));
 				return true;
 			} else if ("buildmode".equalsIgnoreCase(args[0])) {
 				if (!sender.hasPermission("hubpro.buildmode")) {

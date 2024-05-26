@@ -20,11 +20,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -123,6 +123,16 @@ public class GeneralListeners implements Listener {
     			e.setCancelled(true);
     		}
     	}
+	}
+
+	@EventHandler
+	public void onProjectile(ProjectileHitEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			PermissionUtils permissionUtils = PermissionUtils.entityHurtPermission(p);
+			if (permissionUtils.check() && !BuildMode.isInBuildMode(p)) {
+				e.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler

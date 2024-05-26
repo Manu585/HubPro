@@ -76,7 +76,6 @@ public class GeneralMethods {
     private void handleConnectAction(Player player, String serverName) {
         if(serverName != null) {
             ConnectionHelper.getInstance().movePlayerToOtherServer(player, serverName);
-            player.sendMessage(ChatColor.YELLOW + "Redirecting you to " + serverName + "!");
             player.closeInventory();
         }
     }
