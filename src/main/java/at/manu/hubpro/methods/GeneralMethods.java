@@ -259,11 +259,9 @@ public class GeneralMethods {
                     if (material != null) {
                         ItemStack item = new ItemStack(material);
                         ItemMeta meta = item.getItemMeta();
-                        if (meta != null) {
-                            meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, MessageUtil.format(itemName)));
-                            meta.setLore       (PlaceholderAPI.setPlaceholders(player, lore));
-                            item.setItemMeta(meta);
-                        }
+                        meta.setDisplayName(PlaceholderAPI.setPlaceholders(player, MessageUtil.format(itemName)));
+                        meta.setLore       (PlaceholderAPI.setPlaceholders(player, lore));
+                        item.setItemMeta(meta);
                         items.put(itemPlace, item);
                     }
                 }

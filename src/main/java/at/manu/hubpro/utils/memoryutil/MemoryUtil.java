@@ -22,7 +22,7 @@ public class MemoryUtil {
 	public static Set<Player> hidePlayers;
 	public static Set<Player> buildModePlayers;
 	public static Map<UUID, Long> lastToggleTimestamp;
-	public static HashMap<UUID, Long> movement_cooldown;
+	public static Map<UUID, Long> movement_cooldown;
 
 	// -- ITEM UTILITY "MEMORY" --
 	public static Map<String, HubItem> hubItemByName;
@@ -32,7 +32,7 @@ public class MemoryUtil {
 	public static Map<UUID, Map<String, Long>> cooldowns;
 
 	// -- CONFIG "MEMORY" --
-	public static HashMap<String, Config> menusConfigs;
+	public static Map<String, Config> menusConfigs;
 
 
 	public MemoryUtil() {
