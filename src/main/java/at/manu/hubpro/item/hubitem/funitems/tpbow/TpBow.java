@@ -18,7 +18,7 @@ public class TpBow extends HubItem {
 
     @Override
     protected void configureItemMeta(ItemMeta meta) {
-        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        meta.addEnchant(Enchantment.INFINITY, 1, true);
         meta.setUnbreakable(true);
     }
 }

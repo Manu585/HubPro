@@ -219,7 +219,7 @@ public class GeneralMethods {
         }, 20L);
 
         player.spawnParticle(Particle.FLAME, location, 100, 0, 0, 0, 0.1);
-        player.spawnParticle(Particle.SMOKE_LARGE, location, 100, 0, 0, 0, 0.1);
+        player.spawnParticle(Particle.LARGE_SMOKE, location, 100, 0, 0, 0, 0.1);
 
         for (int degree = 0; degree < 360; degree++) {
             double radians = Math.toRadians(degree);
